@@ -1,0 +1,494 @@
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Painel da Academia - Treino & Gestão</title>
+    <style>
+      * {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      }
+
+      body {
+        background-color: #f1f5f9;
+        color: #1e293b;
+        min-height: 100vh;
+        display: flex;
+        flex-direction: column;
+      }
+
+      header {
+        background-color: #0f172a;
+        color: white;
+        padding: 16px 32px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+      }
+
+      header h1 {
+        font-size: 1.3rem;
+        font-weight: 600;
+        color: #38bdf8;
+      }
+
+      .btn-sair {
+        color: #f87171;
+        text-decoration: none;
+        font-size: 0.9rem;
+        padding: 6px 14px;
+        border: 1px solid #f87171;
+        border-radius: 6px;
+        transition: all 0.2s;
+      }
+
+      .btn-sair:hover {
+        background-color: #f87171;
+        color: white;
+      }
+
+      main {
+        max-width: 1200px;
+        width: 100%;
+        margin: 30px auto;
+        padding: 0 20px;
+        flex: 1;
+      }
+
+      .tabs-container {
+        display: flex;
+        flex-direction: row;
+        justify-content: flex-start;
+        gap: 10px;
+        border-bottom: 2px solid #cbd5e1;
+        margin-bottom: 24px;
+        overflow-x: auto;
+        padding-bottom: 2px;
+      }
+
+      .tab-btn {
+        background-color: transparent;
+        border: none;
+        outline: none;
+        padding: 12px 20px;
+        font-size: 0.95rem;
+        font-weight: 600;
+        color: #64748b;
+        cursor: pointer;
+        border-radius: 8px 8px 0 0;
+        transition: all 0.2s ease;
+        white-space: nowrap;
+        position: relative;
+        bottom: -2px;
+      }
+
+      .tab-btn:hover {
+        color: #0284c7;
+        background-color: #e2e8f0;
+      }
+
+      .tab-btn.active {
+        color: #0284c7;
+        border-bottom: 3px solid #0284c7;
+        background-color: #ffffff;
+      }
+
+      .tab-content {
+        display: none;
+        background: #ffffff;
+        padding: 30px;
+        border-radius: 8px;
+        box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+      }
+
+      .tab-content.active {
+        display: block;
+        animation: fadeIn 0.3s ease-in-out;
+      }
+
+      .item-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+        gap: 16px;
+        margin-top: 20px;
+      }
+
+      .item-card {
+        background: #f8fafc;
+        border: 1px solid #e2e8f0;
+        padding: 16px;
+        border-radius: 6px;
+      }
+
+      .item-card h4 {
+        color: #0369a1;
+        margin-bottom: 6px;
+      }
+
+      /* Formulário da Área do Aluno */
+      .form-group {
+        margin-bottom: 15px;
+      }
+
+      .form-group label {
+        display: block;
+        font-weight: 600;
+        margin-bottom: 5px;
+        color: #334155;
+      }
+
+      .form-group input,
+      .form-group textarea {
+        width: 100%;
+        padding: 10px;
+        border: 1px solid #cbd5e1;
+        border-radius: 6px;
+        font-size: 0.95rem;
+      }
+
+      .btn-salvar {
+        background-color: #0284c7;
+        color: white;
+        border: none;
+        padding: 12px 24px;
+        border-radius: 6px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: background-color 0.2s;
+      }
+
+      .btn-salvar:hover {
+        background-color: #0369a1;
+      }
+
+      .badge-status {
+        display: inline-block;
+        margin-top: 10px;
+        font-size: 0.85rem;
+        font-weight: 600;
+        padding: 4px 8px;
+        border-radius: 4px;
+      }
+
+      .status-conectado {
+        background-color: #dcfce7;
+        color: #15803d;
+      }
+
+      @keyframes fadeIn {
+        from {
+          opacity: 0;
+          transform: translateY(4px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <header>
+      <h1>Espaço Fitness & Treino</h1>
+      <a href="index-2.html" class="btn-sair">Sair</a>
+    </header>
+
+    <main>
+      <!-- Menu de Abas Horizontais -->
+      <nav class="tabs-container">
+        <button class="tab-btn active" onclick="abrirAba('aluno', this)">
+          ÁREA DO ALUNO
+        </button>
+        <button class="tab-btn" onclick="abrirAba('aulas', this)">AULAS</button>
+        <button class="tab-btn" onclick="abrirAba('maquinas', this)">
+          MÁQUINAS
+        </button>
+        <button class="tab-btn" onclick="abrirAba('horarios', this)">
+          HORÁRIOS
+        </button>
+        <button class="tab-btn" onclick="abrirAba('profissionais', this)">
+          PROFISSIONAIS
+        </button>
+        <button class="tab-btn" onclick="abrirAba('ficha', this)">
+          FICHA DE TREINO
+        </button>
+      </nav>
+
+      <!-- Aba: ÁREA DO ALUNO -->
+      <section id="aluno" class="tab-content active">
+        <h2>Área do Aluno</h2>
+        <span class="badge-status status-conectado"
+          >Conectado ao MongoDB Atlas</span
+        >
+
+        <!-- Dados sincronizados do Banco -->
+        <div class="item-grid" style="margin-bottom: 24px">
+          <div class="item-card">
+            <h4>E-mail Cadastrado</h4>
+            <p id="aluno-email">Carregando...</p>
+          </div>
+          <div class="item-card">
+            <h4>Data de Nascimento</h4>
+            <p id="aluno-nascimento">Carregando...</p>
+          </div>
+          <div class="item-card">
+            <h4>ID do Registro</h4>
+            <p id="aluno-id" style="font-family: monospace; font-size: 0.85rem">
+              Carregando...
+            </p>
+          </div>
+        </div>
+
+        <!-- Formulário para salvar dados complementares no MongoDB -->
+        <form id="form-aluno" onsubmit="salvarDadosAluno(event)">
+          <div class="form-group">
+            <label for="objetivo">Objetivo Atual do Treino</label>
+            <input
+              type="text"
+              id="objetivo"
+              placeholder="Ex: Hipertrofia, Resistência, Perda de peso"
+              required
+            />
+          </div>
+
+          <div class="form-group">
+            <label for="peso">Peso Atual (kg)</label>
+            <input
+              type="number"
+              id="peso"
+              step="0.1"
+              placeholder="Ex: 75.5"
+              required
+            />
+          </div>
+
+          <div class="form-group">
+            <label for="observacoes">Observações & Metas Pessoais</label>
+            <textarea
+              id="observacoes"
+              rows="3"
+              placeholder="Informações de saúde, restrições ou foco da semana..."
+            ></textarea>
+          </div>
+
+          <button type="submit" class="btn-salvar">
+            Salvar no Banco de Dados
+          </button>
+          <span
+            id="mensagem-status"
+            style="margin-left: 15px; font-weight: 500"
+          ></span>
+        </form>
+      </section>
+
+      <!-- AULAS -->
+      <section id="aulas" class="tab-content">
+        <h2>Modalidades e Aulas Coletivas</h2>
+        <p>Acompanhe as aulas disponíveis na grade semanal:</p>
+        <div class="item-grid">
+          <div class="item-card">
+            <h4>Spinning</h4>
+            <p>
+              Treino cardiovascular de alta intensidade sobre bicicletas
+              estáticas.
+            </p>
+          </div>
+          <div class="item-card">
+            <h4>Musculação Guiada</h4>
+            <p>Acompanhamento postural e técnico nos principais aparelhos.</p>
+          </div>
+          <div class="item-card">
+            <h4>Funcional & HIIT</h4>
+            <p>Circuitos dinâmicos com foco em queima calórica e mobilidade.</p>
+          </div>
+        </div>
+      </section>
+
+      <!-- MÁQUINAS -->
+      <section id="maquinas" class="tab-content">
+        <h2>Parque de Máquinas & Equipamentos</h2>
+        <p>Status de manutenção e distribuição dos aparelhos:</p>
+        <div class="item-grid">
+          <div class="item-card">
+            <h4>Leg Press 45°</h4>
+            <p>Setor de Membros Inferiores • Status: Disponível</p>
+          </div>
+          <div class="item-card">
+            <h4>Puxador Articulado</h4>
+            <p>Setor Dorsal / Costas • Status: Disponível</p>
+          </div>
+          <div class="item-card">
+            <h4>Crossover Angular</h4>
+            <p>Setor de Cabos • Status: Manutenção Preventiva</p>
+          </div>
+        </div>
+      </section>
+
+      <!-- HORÁRIOS -->
+      <section id="horarios" class="tab-content">
+        <h2>Quadro de Horários de Funcionamento</h2>
+        <p>Consulte os turnos de pico e atendimento dos instrutores:</p>
+        <div class="item-grid">
+          <div class="item-card">
+            <h4>Segunda a Sexta</h4>
+            <p>06h00 às 23h00 (Instrutores presentes em todos os turnos)</p>
+          </div>
+          <div class="item-card">
+            <h4>Sábados</h4>
+            <p>08h00 às 17h00</p>
+          </div>
+          <div class="item-card">
+            <h4>Domingos e Feriados</h4>
+            <p>09h00 às 14h00</p>
+          </div>
+        </div>
+      </section>
+
+      <!-- PROFISSIONAIS -->
+      <section id="profissionais" class="tab-content">
+        <h2>Equipe de Profissionais & Personal Trainers</h2>
+        <p>Educadores físicos e nutricionistas credenciados:</p>
+        <div class="item-grid">
+          <div class="item-card">
+            <h4>Treinador de Salão</h4>
+            <p>CREF ativo • Especialista em Hipertrofia e Biomecânica</p>
+          </div>
+          <div class="item-card">
+            <h4>Instrutor de Aulas Coletivas</h4>
+            <p>CREF ativo • Especialista em Ritmos e Treino Funcional</p>
+          </div>
+          <div class="item-card">
+            <h4>Apoio Nutricional</h4>
+            <p>CRN ativo • Avaliação de bioimpedância e rotina alimentar</p>
+          </div>
+        </div>
+      </section>
+
+      <!-- FICHA DE TREINO -->
+      <section id="ficha" class="tab-content">
+        <h2>Ficha de Treino Atual</h2>
+        <p>Sua divisão de treinamento configurada pelo instrutor:</p>
+        <div class="item-grid">
+          <div class="item-card">
+            <h4>Treino A (Peito & Tríceps)</h4>
+            <p>
+              4 exercícios compostos + 2 isolados (3 a 4 séries de 10 a 12 reps)
+            </p>
+          </div>
+          <div class="item-card">
+            <h4>Treino B (Costas & Bíceps)</h4>
+            <p>Puxadas, remadas curvadas e flexões de cotovelo</p>
+          </div>
+          <div class="item-card">
+            <h4>Treino C (Pernas Completo)</h4>
+            <p>Agachamento livre, leg press e flexora/extensora</p>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <script>
+      let idAlunoCarregado = null
+
+      function abrirAba(idAba, botaoClicado) {
+        document
+          .querySelectorAll('.tab-content')
+          .forEach(c => c.classList.remove('active'))
+        document
+          .querySelectorAll('.tab-btn')
+          .forEach(b => b.classList.remove('active'))
+        document.getElementById(idAba).classList.add('active')
+        botaoClicado.classList.add('active')
+      }
+
+      // Comunicação GET apontando explicitamente para a porta 3000
+      async function carregarDadosAluno() {
+        const emailElem = document.getElementById('aluno-email')
+        const nascElem = document.getElementById('aluno-nascimento')
+        const idElem = document.getElementById('aluno-id')
+
+        try {
+          const resposta = await fetch('http://localhost:3000/api/aluno')
+
+          if (!resposta.ok) {
+            emailElem.textContent = 'Nenhum cadastro encontrado no banco.'
+            nascElem.textContent = '-'
+            idElem.textContent = '-'
+            return
+          }
+
+          const dados = await resposta.json()
+
+          idAlunoCarregado = dados._id
+          emailElem.textContent = dados.email
+          nascElem.textContent = dados.nascimento
+            ? new Date(dados.nascimento).toLocaleDateString('pt-BR')
+            : 'Não informada'
+          idElem.textContent = dados._id
+
+          if (dados.objetivo)
+            document.getElementById('objetivo').value = dados.objetivo
+          if (dados.peso) document.getElementById('peso').value = dados.peso
+          if (dados.observacoes)
+            document.getElementById('observacoes').value = dados.observacoes
+        } catch (erro) {
+          console.error('Erro na comunicação com a API:', erro)
+          emailElem.textContent = 'Erro de conexão com o servidor'
+          nascElem.textContent = 'Verifique se node server.js está ativo'
+          idElem.textContent = 'Offline'
+        }
+      }
+
+      // Comunicação POST apontando explicitamente para a porta 3000
+      async function salvarDadosAluno(evento) {
+        evento.preventDefault()
+        const status = document.getElementById('mensagem-status')
+        status.style.color = '#0284c7'
+        status.textContent = 'Enviando ao MongoDB...'
+
+        if (!idAlunoCarregado) {
+          status.style.color = '#b91c1c'
+          status.textContent = 'Nenhum aluno ativo para atualizar.'
+          return
+        }
+
+        const payload = {
+          id: idAlunoCarregado,
+          objetivo: document.getElementById('objetivo').value,
+          peso: document.getElementById('peso').value,
+          observacoes: document.getElementById('observacoes').value
+        }
+
+        try {
+          const resposta = await fetch(
+            'http://localhost:3000/api/aluno/atualizar',
+            {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify(payload)
+            }
+          )
+
+          const resultado = await resposta.json()
+          if (resposta.ok) {
+            status.style.color = '#15803d'
+            status.textContent = '✓ Dados salvos com sucesso no MongoDB Atlas!'
+          } else {
+            status.style.color = '#b91c1c'
+            status.textContent =
+              'Falha: ' + (resultado.erro || 'Erro no servidor')
+          }
+        } catch (erro) {
+          status.style.color = '#b91c1c'
+          status.textContent = 'Erro ao se comunicar com o servidor.'
+        }
+      }
+
+      window.onload = carregarDadosAluno
+    </script>
+  </body>
+</html>
