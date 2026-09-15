@@ -7,11 +7,11 @@ const fs = require('fs')
 const app = express()
 const PORT = 3000
 
-// Configurações para requisições de formulários e JSON
+// Configurações para ler formulários comuns e requisições JSON
 app.use(bodyParser.urlencoded({ extended: true }))
 app.use(express.json())
 
-// Liberação de CORS (permite requisições tanto de localhost quanto de aberturas diretas)
+// Configuração de CORS
 app.use((req, res, next) => {
   res.header('Access-Control-Allow-Origin', '*')
   res.header('Access-Control-Allow-Methods', 'GET, POST, OPTIONS')
@@ -20,14 +20,14 @@ app.use((req, res, next) => {
   next()
 })
 
-// Localiza a pasta public automaticamente (esteja o server.js na raiz ou dentro de src/)
+// Localiza a pasta public automaticamente
 const publicDir = fs.existsSync(path.join(__dirname, 'public'))
   ? path.join(__dirname, 'public')
   : path.join(__dirname, '../public')
 
 app.use(express.static(publicDir))
 
-// 1. Conexão com o MongoDB Local (sem dependência de internet ou usuário/senha)
+// 1. Conexão com o MongoDB Local
 const mongoURI = 'mongodb://127.0.0.1:27017/academia'
 
 mongoose
@@ -37,26 +37,32 @@ mongoose
     console.error('Erro ao conectar ao MongoDB Local:', err.message)
   )
 
-// 2. Schema do Usuário (com campos da Área do Aluno)
+// 2. Schema do Aluno
 const usuarioSchema = new mongoose.Schema({
+  nome: {
+    type: String,
+    required: [true, 'O nome é obrigatório'],
+    trim: true
+  },
   email: {
     type: String,
-    required: true,
+    required: [true, 'O e-mail é obrigatório'],
     unique: true,
     trim: true,
     lowercase: true
   },
   senha: {
     type: String,
-    required: true
+    required: [true, 'A senha é obrigatória'],
+    trim: true
   },
   nascimento: {
     type: Date,
-    required: true
+    required: [true, 'A data de nascimento é obrigatória']
   },
   objetivo: {
     type: String,
-    default: 'Não definido'
+    default: 'Condicionamento Físico'
   },
   peso: {
     type: Number,
@@ -66,7 +72,7 @@ const usuarioSchema = new mongoose.Schema({
     type: String,
     default: 'Nenhuma observação cadastrada.'
   },
-  atualizadoEm: {
+  dataCadastro: {
     type: Date,
     default: Date.now
   }
@@ -74,121 +80,199 @@ const usuarioSchema = new mongoose.Schema({
 
 const Usuario = mongoose.model('Usuario', usuarioSchema)
 
-// 3. Schema de Auditoria / Validação de Senha (PasswordChallenge)
-const validacaoSchema = new mongoose.Schema({
-  user_id: { type: String, required: true },
-  password_id: { type: Number, required: true },
-  request_id: { type: String, required: true },
-  domain: { type: String, default: 'loirama' },
-  environment: { type: String, default: 'production' },
-  type: { type: String, default: 'PasswordChallenge' },
-  code: { type: String },
-  isValid: { type: Boolean, required: true },
-  data_validacao: { type: Date, default: Date.now }
-})
-
-const Validacao = mongoose.model('Validacao', validacaoSchema)
-
-// ==========================================
-// ROTA 1: Login / Cadastro Inicial
-// ==========================================
-app.post('/login-endpoint', async (req, res) => {
-  console.log('--> Dados recebidos do formulário:', req.body)
+// ========================================================
+// ROTA 1: CADASTRO DE NOVO ALUNO (POST /api/cadastro)
+// ========================================================
+app.post('/api/cadastro', async (req, res) => {
+  console.log('\n--- [NOVO CADASTRO RECEBIDO] ---')
+  console.log('Dados recebidos:', req.body)
 
   try {
-    const { email, senha, nascimento } = req.body
+    const { nome, email, senha, nascimento, objetivo, peso, observacoes } =
+      req.body
 
-    const passwordChallenge = {
-      __domain__: 'loirama',
-      __environment__: 'production',
-      __type__: 'PasswordChallenge',
-      code: 'iIsImlzcyI6Imh0dHA6Ly9sb2NhbGhvc3Q6NDAwMC90L2Jsb2NrcHVsc2UiLCJraWQ',
-      error: null,
-      expired_at: null,
-      password_id: 145,
-      renew_password: null,
-      request_id: 'edead972-68e1-49ea-8257-c0584cded957',
-      user_id: '37a4c183-8e33-43aa-8c0d-ea7bbc648bf1',
-      'valid?': true
+    if (!nome || !email || !senha || !nascimento) {
+      return res.status(400).json({
+        sucesso: false,
+        mensagem:
+          'Preencha todos os campos obrigatórios (nome, e-mail, senha e nascimento).'
+      })
     }
 
-    if (!passwordChallenge['valid?']) {
-      return res.status(401).send('Validação de segurança reprovada.')
-    }
+    const emailLimpo = String(email).toLowerCase().trim()
+    const senhaLimpa = String(senha).trim()
 
-    // Salva o usuário no banco local
-    const novoUsuario = new Usuario({ email, senha, nascimento })
-    await novoUsuario.save()
-
-    // Registra a auditoria da validação no banco local
-    const novoRegistroValidacao = new Validacao({
-      user_id: passwordChallenge.user_id,
-      password_id: passwordChallenge.password_id,
-      request_id: passwordChallenge.request_id,
-      domain: passwordChallenge.__domain__,
-      environment: passwordChallenge.__environment__,
-      type: passwordChallenge.__type__,
-      code: passwordChallenge.code,
-      isValid: passwordChallenge['valid?']
+    const novoUsuario = new Usuario({
+      nome: String(nome).trim(),
+      email: emailLimpo,
+      senha: senhaLimpa,
+      nascimento,
+      objetivo: objetivo || 'Condicionamento Físico',
+      peso: peso ? Number(peso) : 0,
+      observacoes: observacoes || 'Matrícula recente.'
     })
-    await novoRegistroValidacao.save()
 
-    console.log('--> Usuário e Validação gravados no banco local!')
-    res.redirect('/index-3.html')
+    await novoUsuario.save()
+    console.log(
+      `✓ Conta criada com sucesso para: ${novoUsuario.nome} (${novoUsuario.email})`
+    )
+
+    return res.status(201).json({
+      sucesso: true,
+      mensagem: 'Cadastro realizado com sucesso!',
+      alunoId: novoUsuario._id,
+      redirectUrl: '/login.html'
+    })
   } catch (erro) {
     if (erro.code === 11000) {
-      return res.status(400).send('Este e-mail já está cadastrado no sistema.')
+      return res.status(409).json({
+        sucesso: false,
+        mensagem: 'Este e-mail já está cadastrado no sistema.'
+      })
     }
-    console.error('--> ERRO AO SALVAR NO BANCO:', erro.message)
-    res.status(500).send('Erro interno ao salvar no banco: ' + erro.message)
+
+    console.error('Erro ao salvar no banco:', erro.message)
+    return res.status(500).json({
+      sucesso: false,
+      mensagem: 'Erro interno no servidor ao realizar cadastro.'
+    })
   }
 })
 
-// ==========================================
-// ROTA 2: Busca Dados para a Área do Aluno
-// ==========================================
+// ========================================================
+// ROTA 2: VALIDAÇÃO DE LOGIN (POST /login-endpoint)
+// Suporta tanto requisição via Formulário HTML quanto via Fetch (JSON)
+// ========================================================
+app.post('/login-endpoint', async (req, res) => {
+  console.log('\n--- [TENTATIVA DE LOGIN] ---')
+  console.log('Dados recebidos na requisição:', req.body)
+
+  const isFetchRequest =
+    req.is('json') || req.headers['content-type']?.includes('application/json')
+
+  try {
+    const { email, senha } = req.body
+
+    if (!email || !senha) {
+      const msg = 'Informe o e-mail e a senha.'
+      if (isFetchRequest)
+        return res.status(400).json({ sucesso: false, mensagem: msg })
+      return res
+        .status(400)
+        .send(
+          `<script>alert('${msg}'); window.location.href = '/login.html';</script>`
+        )
+    }
+
+    const emailBusca = String(email).toLowerCase().trim()
+    const senhaDigitada = String(senha).trim()
+
+    // 1. Busca o aluno no MongoDB
+    const usuario = await Usuario.findOne({ email: emailBusca })
+
+    // 2. Se não existir no banco
+    if (!usuario) {
+      console.log(`❌ E-mail não encontrado no sistema: "${emailBusca}"`)
+      const msg = `O e-mail "${emailBusca}" não possui cadastro.\\nFaça a matrícula primeiro na tela de cadastro.`
+      if (isFetchRequest)
+        return res.status(401).json({ sucesso: false, mensagem: msg })
+      return res
+        .status(401)
+        .send(
+          `<script>alert('${msg}'); window.location.href = '/cadastro.html';</script>`
+        )
+    }
+
+    // 3. Validação da senha
+    const senhaCadastrada = String(usuario.senha).trim()
+    console.log(
+      `Validação: Digitada="${senhaDigitada}" | Salva="${senhaCadastrada}"`
+    )
+
+    if (senhaDigitada !== senhaCadastrada) {
+      console.log(`❌ Senha incorreta para o e-mail: ${usuario.email}`)
+      const msg = 'Senha incorreta! Verifique os dados digitados.'
+      if (isFetchRequest)
+        return res.status(401).json({ sucesso: false, mensagem: msg })
+      return res
+        .status(401)
+        .send(
+          `<script>alert('${msg}'); window.location.href = '/login.html';</script>`
+        )
+    }
+
+    // 4. Sucesso: Login aprovado
+    console.log(
+      `✓ Acesso autorizado para: ${usuario.nome} (ID: ${usuario._id})`
+    )
+
+    if (isFetchRequest) {
+      return res.json({
+        sucesso: true,
+        mensagem: 'Login realizado com sucesso!',
+        redirectUrl: `/home.html?id=${usuario._id}`
+      })
+    }
+
+    // Redirecionamento padrão de formulário
+    res.redirect(`/home.html?id=${usuario._id}`)
+  } catch (erro) {
+    console.error('Erro ao processar login:', erro)
+    if (isFetchRequest)
+      return res
+        .status(500)
+        .json({ sucesso: false, mensagem: 'Erro interno no servidor.' })
+    res.status(500).send('Erro interno ao tentar autenticar.')
+  }
+})
+
+// ========================================================
+// ROTA 3: BUSCAR DADOS DO ALUNO AUTENTICADO (GET /api/aluno)
+// ========================================================
 app.get('/api/aluno', async (req, res) => {
   try {
-    const aluno = await Usuario.findOne().sort({ _id: -1 })
-    if (!aluno) {
-      return res.status(404).json({ erro: 'Nenhum aluno encontrado no banco.' })
+    const { id } = req.query
+    let aluno = null
+
+    if (id && mongoose.isValidObjectId(id)) {
+      aluno = await Usuario.findById(id)
+    } else {
+      aluno = await Usuario.findOne().sort({ _id: -1 })
     }
+
+    if (!aluno) {
+      return res.status(404).json({ erro: 'Nenhum aluno cadastrado.' })
+    }
+
     res.json(aluno)
   } catch (erro) {
-    res.status(500).json({ erro: 'Erro ao buscar dados no MongoDB.' })
+    res.status(500).json({ erro: 'Erro ao consultar banco de dados.' })
   }
 })
 
-// ==========================================
-// ROTA 3: Atualiza Dados da Área do Aluno
-// ==========================================
+// ========================================================
+// ROTA 4: ATUALIZAR DADOS DO ALUNO (POST /api/aluno/atualizar)
+// ========================================================
 app.post('/api/aluno/atualizar', async (req, res) => {
   try {
     const { id, objetivo, peso, observacoes } = req.body
-
     const alunoAtualizado = await Usuario.findByIdAndUpdate(
       id,
-      {
-        objetivo,
-        peso,
-        observacoes,
-        atualizadoEm: new Date()
-      },
+      { objetivo, peso, observacoes },
       { new: true }
     )
-
-    console.log('--> Dados do aluno atualizados no MongoDB local!')
-    res.json({
-      mensagem: 'Dados atualizados no banco!',
-      aluno: alunoAtualizado
-    })
+    res.json({ sucesso: true, aluno: alunoAtualizado })
   } catch (erro) {
-    console.error('--> Erro ao atualizar no MongoDB:', erro)
-    res.status(500).json({ erro: 'Falha ao salvar no banco de dados.' })
+    res.status(500).json({ erro: 'Falha ao atualizar dados.' })
   }
 })
 
-// Inicialização do servidor
+// Inicialização
 app.listen(PORT, () => {
-  console.log(`Servidor rodando em http://localhost:${PORT}`)
+  console.log(`=========================================`)
+  console.log(`Servidor rodando em: http://localhost:${PORT}`)
+  console.log(`Cadastro:            http://localhost:${PORT}/cadastro.html`)
+  console.log(`Login:               http://localhost:${PORT}/login.html`)
+  console.log(`Home / Painel:       http://localhost:${PORT}/home.html`)
+  console.log(`=========================================`)
 })

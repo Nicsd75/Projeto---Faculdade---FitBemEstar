@@ -43,6 +43,7 @@
         padding: 6px 14px;
         border: 1px solid #f87171;
         border-radius: 6px;
+        cursor: pointer;
         transition: all 0.2s;
       }
 
@@ -61,8 +62,6 @@
 
       .tabs-container {
         display: flex;
-        flex-direction: row;
-        justify-content: flex-start;
         gap: 10px;
         border-bottom: 2px solid #cbd5e1;
         margin-bottom: 24px;
@@ -82,8 +81,6 @@
         border-radius: 8px 8px 0 0;
         transition: all 0.2s ease;
         white-space: nowrap;
-        position: relative;
-        bottom: -2px;
       }
 
       .tab-btn:hover {
@@ -110,6 +107,14 @@
         animation: fadeIn 0.3s ease-in-out;
       }
 
+      .aluno-dados-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+        gap: 16px;
+        margin-top: 16px;
+        margin-bottom: 24px;
+      }
+
       .item-grid {
         display: grid;
         grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
@@ -129,7 +134,6 @@
         margin-bottom: 6px;
       }
 
-      /* Formulário da Área do Aluno */
       .form-group {
         margin-bottom: 15px;
       }
@@ -154,29 +158,15 @@
         background-color: #0284c7;
         color: white;
         border: none;
-        padding: 12px 24px;
+        padding: 12px 32px;
         border-radius: 6px;
-        font-weight: 600;
+        font-weight: 700;
         cursor: pointer;
         transition: background-color 0.2s;
       }
 
       .btn-salvar:hover {
         background-color: #0369a1;
-      }
-
-      .badge-status {
-        display: inline-block;
-        margin-top: 10px;
-        font-size: 0.85rem;
-        font-weight: 600;
-        padding: 4px 8px;
-        border-radius: 4px;
-      }
-
-      .status-conectado {
-        background-color: #dcfce7;
-        color: #15803d;
       }
 
       @keyframes fadeIn {
@@ -194,11 +184,11 @@
   <body>
     <header>
       <h1>Espaço Fitness & Treino</h1>
-      <a href="index-2.html" class="btn-sair">Sair</a>
+      <!-- Botão de Sair com função de Logout integrada -->
+      <a href="#" onclick="fazerLogout(event)" class="btn-sair">Sair</a>
     </header>
 
     <main>
-      <!-- Menu de Abas Horizontais -->
       <nav class="tabs-container">
         <button class="tab-btn active" onclick="abrirAba('aluno', this)">
           ÁREA DO ALUNO
@@ -218,39 +208,36 @@
         </button>
       </nav>
 
-      <!-- Aba: ÁREA DO ALUNO -->
+      <!-- ABA: ÁREA DO ALUNO -->
       <section id="aluno" class="tab-content active">
         <h2>Área do Aluno</h2>
-        <span class="badge-status status-conectado"
-          >Conectado ao MongoDB Atlas</span
-        >
 
-        <!-- Dados sincronizados do Banco -->
-        <div class="item-grid" style="margin-bottom: 24px">
+        <!-- Cards com as informações vindas do MongoDB -->
+        <div class="aluno-dados-grid">
+          <div class="item-card">
+            <h4>Nome do Aluno</h4>
+            <p id="aluno-nome" style="font-weight: bold; color: #0284c7">
+              Carregando...
+            </p>
+          </div>
+          <div class="item-card">
+            <h4>Data de Nascimento / Idade</h4>
+            <p id="aluno-nascimento">Carregando...</p>
+          </div>
           <div class="item-card">
             <h4>E-mail Cadastrado</h4>
             <p id="aluno-email">Carregando...</p>
           </div>
-          <div class="item-card">
-            <h4>Data de Nascimento</h4>
-            <p id="aluno-nascimento">Carregando...</p>
-          </div>
-          <div class="item-card">
-            <h4>ID do Registro</h4>
-            <p id="aluno-id" style="font-family: monospace; font-size: 0.85rem">
-              Carregando...
-            </p>
-          </div>
         </div>
 
-        <!-- Formulário para salvar dados complementares no MongoDB -->
+        <!-- Formulário de dados complementares -->
         <form id="form-aluno" onsubmit="salvarDadosAluno(event)">
           <div class="form-group">
             <label for="objetivo">Objetivo Atual do Treino</label>
             <input
               type="text"
               id="objetivo"
-              placeholder="Ex: Hipertrofia, Resistência, Perda de peso"
+              placeholder="Ex: Hipertrofia, Resistência"
               required
             />
           </div>
@@ -271,13 +258,11 @@
             <textarea
               id="observacoes"
               rows="3"
-              placeholder="Informações de saúde, restrições ou foco da semana..."
+              placeholder="Restrições ou metas..."
             ></textarea>
           </div>
 
-          <button type="submit" class="btn-salvar">
-            Salvar no Banco de Dados
-          </button>
+          <button type="submit" class="btn-salvar">SALVAR</button>
           <span
             id="mensagem-status"
             style="margin-left: 15px; font-weight: 500"
@@ -285,107 +270,61 @@
         </form>
       </section>
 
-      <!-- AULAS -->
+      <!-- DEMAIS ABAS -->
       <section id="aulas" class="tab-content">
         <h2>Modalidades e Aulas Coletivas</h2>
-        <p>Acompanhe as aulas disponíveis na grade semanal:</p>
         <div class="item-grid">
           <div class="item-card">
             <h4>Spinning</h4>
-            <p>
-              Treino cardiovascular de alta intensidade sobre bicicletas
-              estáticas.
-            </p>
+            <p>Cardio intenso em bike indoor.</p>
           </div>
           <div class="item-card">
-            <h4>Musculação Guiada</h4>
-            <p>Acompanhamento postural e técnico nos principais aparelhos.</p>
-          </div>
-          <div class="item-card">
-            <h4>Funcional & HIIT</h4>
-            <p>Circuitos dinâmicos com foco em queima calórica e mobilidade.</p>
+            <h4>Musculação</h4>
+            <p>Acompanhamento postural guiado.</p>
           </div>
         </div>
       </section>
 
-      <!-- MÁQUINAS -->
       <section id="maquinas" class="tab-content">
-        <h2>Parque de Máquinas & Equipamentos</h2>
-        <p>Status de manutenção e distribuição dos aparelhos:</p>
+        <h2>Parque de Máquinas</h2>
         <div class="item-grid">
           <div class="item-card">
             <h4>Leg Press 45°</h4>
-            <p>Setor de Membros Inferiores • Status: Disponível</p>
+            <p>Status: Disponível</p>
           </div>
           <div class="item-card">
-            <h4>Puxador Articulado</h4>
-            <p>Setor Dorsal / Costas • Status: Disponível</p>
-          </div>
-          <div class="item-card">
-            <h4>Crossover Angular</h4>
-            <p>Setor de Cabos • Status: Manutenção Preventiva</p>
+            <h4>Crossover</h4>
+            <p>Status: Disponível</p>
           </div>
         </div>
       </section>
 
-      <!-- HORÁRIOS -->
       <section id="horarios" class="tab-content">
-        <h2>Quadro de Horários de Funcionamento</h2>
-        <p>Consulte os turnos de pico e atendimento dos instrutores:</p>
+        <h2>Horários</h2>
         <div class="item-grid">
           <div class="item-card">
             <h4>Segunda a Sexta</h4>
-            <p>06h00 às 23h00 (Instrutores presentes em todos os turnos)</p>
-          </div>
-          <div class="item-card">
-            <h4>Sábados</h4>
-            <p>08h00 às 17h00</p>
-          </div>
-          <div class="item-card">
-            <h4>Domingos e Feriados</h4>
-            <p>09h00 às 14h00</p>
+            <p>06h00 às 23h00</p>
           </div>
         </div>
       </section>
 
-      <!-- PROFISSIONAIS -->
       <section id="profissionais" class="tab-content">
-        <h2>Equipe de Profissionais & Personal Trainers</h2>
-        <p>Educadores físicos e nutricionistas credenciados:</p>
+        <h2>Profissionais</h2>
         <div class="item-grid">
           <div class="item-card">
             <h4>Treinador de Salão</h4>
-            <p>CREF ativo • Especialista em Hipertrofia e Biomecânica</p>
-          </div>
-          <div class="item-card">
-            <h4>Instrutor de Aulas Coletivas</h4>
-            <p>CREF ativo • Especialista em Ritmos e Treino Funcional</p>
-          </div>
-          <div class="item-card">
-            <h4>Apoio Nutricional</h4>
-            <p>CRN ativo • Avaliação de bioimpedância e rotina alimentar</p>
+            <p>CREF ativo</p>
           </div>
         </div>
       </section>
 
-      <!-- FICHA DE TREINO -->
       <section id="ficha" class="tab-content">
-        <h2>Ficha de Treino Atual</h2>
-        <p>Sua divisão de treinamento configurada pelo instrutor:</p>
+        <h2>Ficha de Treino</h2>
         <div class="item-grid">
           <div class="item-card">
-            <h4>Treino A (Peito & Tríceps)</h4>
-            <p>
-              4 exercícios compostos + 2 isolados (3 a 4 séries de 10 a 12 reps)
-            </p>
-          </div>
-          <div class="item-card">
-            <h4>Treino B (Costas & Bíceps)</h4>
-            <p>Puxadas, remadas curvadas e flexões de cotovelo</p>
-          </div>
-          <div class="item-card">
-            <h4>Treino C (Pernas Completo)</h4>
-            <p>Agachamento livre, leg press e flexora/extensora</p>
+            <h4>Treino A</h4>
+            <p>Peito e Tríceps</p>
           </div>
         </div>
       </section>
@@ -405,50 +344,88 @@
         botaoClicado.classList.add('active')
       }
 
-      // Comunicação GET apontando explicitamente para a porta 3000
+      // Função de Logout: limpa os dados da sessão e vai para a tela de login
+      function fazerLogout(evento) {
+        if (evento) evento.preventDefault()
+        sessionStorage.removeItem('alunoLogadoId')
+        window.location.href = '/login.html'
+      }
+
       async function carregarDadosAluno() {
+        const nomeElem = document.getElementById('aluno-nome')
         const emailElem = document.getElementById('aluno-email')
         const nascElem = document.getElementById('aluno-nascimento')
-        const idElem = document.getElementById('aluno-id')
+
+        // 1. Identifica o ID do aluno vindo da URL (?id=...) ou da sessão
+        const urlParams = new URLSearchParams(window.location.search)
+        let alunoId = urlParams.get('id')
+
+        if (alunoId) {
+          sessionStorage.setItem('alunoLogadoId', alunoId)
+        } else {
+          alunoId = sessionStorage.getItem('alunoLogadoId')
+        }
+
+        // 2. Se não houver aluno autenticado, redireciona para a tela de login
+        if (!alunoId) {
+          alert('Por favor, faça login para acessar o painel.')
+          window.location.href = '/login.html'
+          return
+        }
 
         try {
-          const resposta = await fetch('http://localhost:3000/api/aluno')
+          // 3. Busca estritamente o aluno autenticado pelo ID
+          const resposta = await fetch(`/api/aluno?id=${alunoId}`)
 
           if (!resposta.ok) {
-            emailElem.textContent = 'Nenhum cadastro encontrado no banco.'
-            nascElem.textContent = '-'
-            idElem.textContent = '-'
+            sessionStorage.removeItem('alunoLogadoId')
+            window.location.href = '/login.html'
             return
           }
 
           const dados = await resposta.json()
-
           idAlunoCarregado = dados._id
-          emailElem.textContent = dados.email
-          nascElem.textContent = dados.nascimento
-            ? new Date(dados.nascimento).toLocaleDateString('pt-BR')
-            : 'Não informada'
-          idElem.textContent = dados._id
 
+          // Nome
+          nomeElem.textContent =
+            dados.nome || (dados.email ? dados.email.split('@')[0] : 'Aluno')
+
+          // E-mail
+          emailElem.textContent = dados.email || '-'
+
+          // Nascimento e Idade calculada
+          if (dados.nascimento) {
+            const dataNasc = new Date(dados.nascimento)
+            const hoje = new Date()
+            let idade = hoje.getFullYear() - dataNasc.getFullYear()
+            const mes = hoje.getMonth() - dataNasc.getMonth()
+            if (mes < 0 || (mes === 0 && hoje.getDate() < dataNasc.getDate())) {
+              idade--
+            }
+            nascElem.textContent = `${dataNasc.toLocaleDateString('pt-BR')} (${idade} anos)`
+          } else {
+            nascElem.textContent = 'Não informada'
+          }
+
+          // Formulário do aluno
           if (dados.objetivo)
             document.getElementById('objetivo').value = dados.objetivo
           if (dados.peso) document.getElementById('peso').value = dados.peso
           if (dados.observacoes)
             document.getElementById('observacoes').value = dados.observacoes
         } catch (erro) {
-          console.error('Erro na comunicação com a API:', erro)
-          emailElem.textContent = 'Erro de conexão com o servidor'
-          nascElem.textContent = 'Verifique se node server.js está ativo'
-          idElem.textContent = 'Offline'
+          console.error('Erro ao buscar dados:', erro)
+          nomeElem.textContent = 'Erro ao carregar'
+          emailElem.textContent = 'Verifique se o servidor está ativo'
+          nascElem.textContent = '-'
         }
       }
 
-      // Comunicação POST apontando explicitamente para a porta 3000
       async function salvarDadosAluno(evento) {
         evento.preventDefault()
         const status = document.getElementById('mensagem-status')
         status.style.color = '#0284c7'
-        status.textContent = 'Enviando ao MongoDB...'
+        status.textContent = 'Salvando...'
 
         if (!idAlunoCarregado) {
           status.style.color = '#b91c1c'
@@ -464,31 +441,27 @@
         }
 
         try {
-          const resposta = await fetch(
-            'http://localhost:3000/api/aluno/atualizar',
-            {
-              method: 'POST',
-              headers: { 'Content-Type': 'application/json' },
-              body: JSON.stringify(payload)
-            }
-          )
+          const resposta = await fetch('/api/aluno/atualizar', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(payload)
+          })
 
           const resultado = await resposta.json()
           if (resposta.ok) {
             status.style.color = '#15803d'
-            status.textContent = '✓ Dados salvos com sucesso no MongoDB Atlas!'
+            status.textContent = '✓ Salvo com sucesso!'
           } else {
             status.style.color = '#b91c1c'
-            status.textContent =
-              'Falha: ' + (resultado.erro || 'Erro no servidor')
+            status.textContent = 'Falha: ' + (resultado.erro || 'Erro')
           }
         } catch (erro) {
           status.style.color = '#b91c1c'
-          status.textContent = 'Erro ao se comunicar com o servidor.'
+          status.textContent = 'Erro de conexão.'
         }
       }
 
-      window.onload = carregarDadosAluno
+      window.addEventListener('DOMContentLoaded', carregarDadosAluno)
     </script>
   </body>
 </html>

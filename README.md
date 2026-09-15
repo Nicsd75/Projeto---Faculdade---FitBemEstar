@@ -20,4 +20,4 @@ Projeto acadêmico desenvolvido em Node.js, Express e MongoDB para controle de t
    node src/server.js
 
 4. Acesse no navegador:
-   http://localhost:3000/index-2.html
+   http://localhost:3000/login.html
