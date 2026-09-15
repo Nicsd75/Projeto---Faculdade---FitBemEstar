@@ -143,7 +143,7 @@ app.post('/api/cadastro', async (req, res) => {
 // ROTA 2: VALIDAÇÃO DE LOGIN (POST /login-endpoint)
 // Suporta tanto requisição via Formulário HTML quanto via Fetch (JSON)
 // ========================================================
-app.post('/login-endpoint', async (req, res) => {
+app.post('/api/login', async (req, res) => {
   console.log('\n--- [TENTATIVA DE LOGIN] ---')
   console.log('Dados recebidos na requisição:', req.body)
 

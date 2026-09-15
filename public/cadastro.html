@@ -3,7 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>EasyHealth - Cadastro de Aluno</title>
+    <title>FitBemEstar - Cadastro de Aluno</title>
     <style>
       :root {
         --primary: #4361ee;
@@ -234,7 +234,7 @@
               <option value="Emagrecimento">
                 Perda de Gordura / Emagrecimento
               </option>
-              <option value="Condicionamento">
+              <option value="Condicionamento Físico">
                 Condicionamento Físico Geral
               </option>
               <option value="Saúde e Reabilitação">Saúde e Reabilitação</option>
@@ -258,8 +258,7 @@
       </form>
 
       <div class="footer">
-        Já possui uma conta? <a href="/login.html">Ir para Login</a> |
-        <a href="/home.html.html">Área do Aluno</a>
+        Já possui uma conta? <a href="/login.html">Ir para Login</a>
       </div>
     </div>
 
@@ -306,7 +305,7 @@
               'success'
             )
             setTimeout(() => {
-              window.location.href = data.redirectUrl || '/home.html.html'
+              window.location.href = data.redirectUrl || '/login.html'
             }, 1500)
           } else {
             showAlert(data.mensagem || 'Erro ao realizar cadastro.', 'error')
