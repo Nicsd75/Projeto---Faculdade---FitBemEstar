@@ -11,7 +11,7 @@ Projeto acadêmico desenvolvido em Node.js, Express e MongoDB para controle de t
 ##  Como rodar o projeto localmente
 
 1. Clone o repositório:
-   git clone https://github.com/SEU_USUARIO/NOME_DO_REPOSITORIO.git
+   git clone (https://github.com/Nicsd75/Projeto---Faculdade---FitBemEstar) 
 
 2. Instale as dependências:
    npm install
