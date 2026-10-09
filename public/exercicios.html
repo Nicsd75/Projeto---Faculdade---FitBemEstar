@@ -1,0 +1,418 @@
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Tutoriais em Vídeo - Espaço Fitness</title>
+    <style>
+      * {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      }
+
+      body {
+        background-color: #0f172a;
+        color: #f8fafc;
+        min-height: 100vh;
+        display: flex;
+        flex-direction: column;
+      }
+
+      header {
+        background-color: #1e293b;
+        border-bottom: 1px solid #334155;
+        padding: 16px 32px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+      }
+
+      header h1 {
+        font-size: 1.25rem;
+        color: #38bdf8;
+      }
+
+      .btn-voltar {
+        color: #94a3b8;
+        text-decoration: none;
+        font-size: 0.9rem;
+        font-weight: 600;
+        padding: 8px 16px;
+        border: 1px solid #475569;
+        border-radius: 6px;
+        transition: all 0.2s;
+      }
+
+      .btn-voltar:hover {
+        background-color: #38bdf8;
+        color: #0f172a;
+        border-color: #38bdf8;
+      }
+
+      main {
+        max-width: 1200px;
+        width: 100%;
+        margin: 24px auto;
+        padding: 0 20px;
+        flex: 1;
+      }
+
+      .filtros-container {
+        display: flex;
+        gap: 10px;
+        margin-bottom: 24px;
+        overflow-x: auto;
+        padding-bottom: 6px;
+      }
+
+      .filtro-btn {
+        background-color: #1e293b;
+        color: #94a3b8;
+        border: 1px solid #334155;
+        padding: 8px 18px;
+        border-radius: 20px;
+        cursor: pointer;
+        font-weight: 600;
+        font-size: 0.85rem;
+        transition: all 0.2s;
+        white-space: nowrap;
+      }
+
+      .filtro-btn:hover,
+      .filtro-btn.active {
+        background-color: #0284c7;
+        color: white;
+        border-color: #0284c7;
+      }
+
+      .layout-grid {
+        display: grid;
+        grid-template-columns: 320px 1fr;
+        gap: 24px;
+      }
+
+      @media (max-width: 860px) {
+        .layout-grid {
+          grid-template-columns: 1fr;
+        }
+      }
+
+      .lista-exercicios {
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+        max-height: 75vh;
+        overflow-y: auto;
+        padding-right: 6px;
+      }
+
+      .card-item {
+        background-color: #1e293b;
+        border: 1px solid #334155;
+        border-radius: 8px;
+        padding: 16px;
+        cursor: pointer;
+        transition: all 0.2s;
+      }
+
+      .card-item:hover {
+        border-color: #38bdf8;
+        transform: translateY(-2px);
+      }
+
+      .card-item.selecionado {
+        border-color: #38bdf8;
+        background-color: #0f172a;
+        box-shadow: 0 0 0 2px rgba(56, 189, 248, 0.3);
+      }
+
+      .card-item h3 {
+        font-size: 1rem;
+        color: #f8fafc;
+        margin-bottom: 6px;
+      }
+
+      .badge {
+        display: inline-block;
+        font-size: 0.75rem;
+        padding: 3px 8px;
+        border-radius: 4px;
+        background-color: #334155;
+        color: #cbd5e1;
+        margin-right: 6px;
+      }
+
+      .player-container {
+        background-color: #1e293b;
+        border: 1px solid #334155;
+        border-radius: 12px;
+        padding: 24px;
+      }
+
+      .video-wrapper {
+        position: relative;
+        padding-bottom: 56.25%; /* Proporção 16:9 */
+        height: 0;
+        overflow: hidden;
+        border-radius: 8px;
+        background-color: #000;
+        margin-bottom: 20px;
+      }
+
+      .video-wrapper iframe {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        border: 0;
+      }
+
+      .detalhes h2 {
+        font-size: 1.4rem;
+        color: #38bdf8;
+        margin-bottom: 8px;
+      }
+
+      .detalhes p {
+        color: #cbd5e1;
+        font-size: 0.95rem;
+        line-height: 1.5;
+        margin-bottom: 20px;
+      }
+
+      .dicas-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 16px;
+      }
+
+      @media (max-width: 600px) {
+        .dicas-grid {
+          grid-template-columns: 1fr;
+        }
+      }
+
+      .dica-box {
+        background-color: #0f172a;
+        border: 1px solid #334155;
+        border-radius: 8px;
+        padding: 16px;
+      }
+
+      .dica-box h4 {
+        font-size: 0.9rem;
+        margin-bottom: 10px;
+      }
+
+      .dica-box.sucesso h4 {
+        color: #4ade80;
+      }
+
+      .dica-box.alerta h4 {
+        color: #f87171;
+      }
+
+      .dica-box ul {
+        list-style: none;
+        font-size: 0.85rem;
+        color: #94a3b8;
+      }
+
+      .dica-box ul li {
+        margin-bottom: 8px;
+        padding-left: 14px;
+        position: relative;
+      }
+
+      .dica-box.sucesso ul li::before {
+        content: '✓';
+        position: absolute;
+        left: 0;
+        color: #4ade80;
+      }
+
+      .dica-box.alerta ul li::before {
+        content: '✕';
+        position: absolute;
+        left: 0;
+        color: #f87171;
+      }
+    </style>
+  </head>
+  <body>
+    <header>
+      <h1>Espaço Fitness • Biblioteca de Movimentos</h1>
+      <a href="home.html" id="linkVoltar" class="btn-voltar"
+        >← Voltar ao Painel</a
+      >
+    </header>
+
+    <main>
+      <!-- Filtros por Grupo Muscular -->
+      <div class="filtros-container">
+        <button class="filtro-btn active" onclick="filtrarGrupo('Todos', this)">
+          Todos
+        </button>
+        <button class="filtro-btn" onclick="filtrarGrupo('Peito', this)">
+          Peito
+        </button>
+        <button class="filtro-btn" onclick="filtrarGrupo('Costas', this)">
+          Costas
+        </button>
+        <button class="filtro-btn" onclick="filtrarGrupo('Pernas', this)">
+          Pernas
+        </button>
+        <button class="filtro-btn" onclick="filtrarGrupo('Braços', this)">
+          Braços
+        </button>
+      </div>
+
+      <div class="layout-grid">
+        <!-- Lista Lateral de Exercícios -->
+        <div class="lista-exercicios" id="containerLista">
+          <p style="color: #94a3b8; padding: 10px">Carregando exercícios...</p>
+        </div>
+
+        <!-- Reprodutor Central e Orientações Técnicas -->
+        <div class="player-container">
+          <div class="video-wrapper">
+            <iframe id="videoPlayer" src="" allowfullscreen></iframe>
+          </div>
+
+          <div class="detalhes">
+            <h2 id="videoTitulo">Selecione um exercício</h2>
+            <p id="videoDescricao">
+              Clique em qualquer movimento da lista para assistir à aula
+              demonstrativa.
+            </p>
+
+            <div class="dicas-grid">
+              <div class="dica-box sucesso">
+                <h4>Pontos de Atenção & Postura</h4>
+                <ul id="listaPontos">
+                  <li>Selecione um movimento para visualizar as instruções.</li>
+                </ul>
+              </div>
+
+              <div class="dica-box alerta">
+                <h4>Erros Mais Comuns a Evitar</h4>
+                <ul id="listaErros">
+                  <li>
+                    Selecione um movimento para visualizar os alertas de
+                    segurança.
+                  </li>
+                </ul>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </main>
+
+    <script>
+      let todosExercicios = []
+
+      // Mantém a sessão do aluno ao voltar
+      const alunoId =
+        sessionStorage.getItem('alunoLogadoId') ||
+        new URLSearchParams(window.location.search).get('id')
+      if (alunoId) {
+        document.getElementById('linkVoltar').href = `home.html?id=${alunoId}`
+      }
+
+      async function carregarExercicios(grupo = 'Todos') {
+        try {
+          const url =
+            grupo === 'Todos'
+              ? '/api/exercicios'
+              : `/api/exercicios?grupo=${encodeURIComponent(grupo)}`
+          const res = await fetch(url)
+          todosExercicios = await res.json()
+
+          const listaContainer = document.getElementById('containerLista')
+          listaContainer.innerHTML = ''
+
+          if (todosExercicios.length === 0) {
+            listaContainer.innerHTML =
+              '<p style="color: #94a3b8; padding: 10px;">Nenhum exercício encontrado nesta categoria.</p>'
+            return
+          }
+
+          todosExercicios.forEach((ex, index) => {
+            const card = document.createElement('div')
+            card.className = `card-item ${index === 0 ? 'selecionado' : ''}`
+            card.id = `card-${ex._id}`
+            card.onclick = () => selecionarExercicio(ex)
+
+            card.innerHTML = `
+              <h3>${ex.nome}</h3>
+              <span class="badge">${ex.grupoMuscular}</span>
+              <span class="badge">${ex.nivelDificuldade}</span>
+            `
+
+            listaContainer.appendChild(card)
+          })
+
+          // Seleciona o primeiro ou o id que veio na URL
+          const idUrl = new URLSearchParams(window.location.search).get('exId')
+          const alvo = idUrl
+            ? todosExercicios.find(e => e._id === idUrl)
+            : todosExercicios[0]
+          if (alvo) selecionarExercicio(alvo)
+        } catch (err) {
+          console.error(err)
+          document.getElementById('containerLista').innerHTML =
+            '<p style="color: #f87171; padding: 10px;">Erro ao carregar dados.</p>'
+        }
+      }
+
+      function selecionarExercicio(ex) {
+        document
+          .querySelectorAll('.card-item')
+          .forEach(c => c.classList.remove('selecionado'))
+        const cardAtivo = document.getElementById(`card-${ex._id}`)
+        if (cardAtivo) cardAtivo.classList.add('selecionado')
+
+        // Atualiza o player de vídeo do YouTube
+        document.getElementById('videoPlayer').src =
+          `https://www.youtube.com/embed/${ex.videoId}?autoplay=0&rel=0`
+
+        // Atualiza textos
+        document.getElementById('videoTitulo').textContent = ex.nome
+        document.getElementById('videoDescricao').textContent =
+          ex.descricao || ''
+
+        // Atualiza pontos de atenção
+        const listaPontos = document.getElementById('listaPontos')
+        listaPontos.innerHTML = ''
+        ;(ex.pontosAtencao || []).forEach(p => {
+          const li = document.createElement('li')
+          li.textContent = p
+          listaPontos.appendChild(li)
+        })
+
+        // Atualiza erros comuns
+        const listaErros = document.getElementById('listaErros')
+        listaErros.innerHTML = ''
+        ;(ex.errosComuns || []).forEach(e => {
+          const li = document.createElement('li')
+          li.textContent = e
+          listaErros.appendChild(li)
+        })
+      }
+
+      function filtrarGrupo(grupo, btnClicado) {
+        document
+          .querySelectorAll('.filtro-btn')
+          .forEach(b => b.classList.remove('active'))
+        btnClicado.classList.add('active')
+        carregarExercicios(grupo)
+      }
+
+      window.addEventListener('DOMContentLoaded', () => carregarExercicios())
+    </script>
+  </body>
+</html>

@@ -32,12 +32,15 @@ const mongoURI = 'mongodb://127.0.0.1:27017/academia'
 
 mongoose
   .connect(mongoURI)
-  .then(() => console.log('✓ Conectado com sucesso ao MongoDB Local!'))
+  .then(() => {
+    console.log('✓ Conectado com sucesso ao MongoDB Local!')
+    semearExerciciosIniciais()
+  })
   .catch(err =>
     console.error('Erro ao conectar ao MongoDB Local:', err.message)
   )
 
-// 2. Schema do Aluno
+// 2. Schema do Aluno / Usuário
 const usuarioSchema = new mongoose.Schema({
   nome: {
     type: String,
@@ -54,6 +57,7 @@ const usuarioSchema = new mongoose.Schema({
   senha: {
     type: String,
     required: [true, 'A senha é obrigatória'],
+    maxlength: [6, 'A senha deve ter no máximo 6 caracteres'],
     trim: true
   },
   nascimento: {
@@ -80,13 +84,114 @@ const usuarioSchema = new mongoose.Schema({
 
 const Usuario = mongoose.model('Usuario', usuarioSchema)
 
+// 3. Schema de Exercícios e Vídeos Tutoriais
+const exercicioSchema = new mongoose.Schema({
+  nome: { type: String, required: true },
+  grupoMuscular: { type: String, required: true },
+  subgrupo: { type: String },
+  nivelDificuldade: { type: String, default: 'Iniciante' },
+  videoId: { type: String, required: true }, // ID do YouTube (ex: dQw4w9WgXcQ)
+  descricao: { type: String },
+  pontosAtencao: [String],
+  errosComuns: [String]
+})
+
+const Exercicio = mongoose.model('Exercicio', exercicioSchema)
+
+// Função para popular o catálogo de exercícios caso esteja vazio
+async function semearExerciciosIniciais() {
+  try {
+    const total = await Exercicio.countDocuments()
+    if (total === 0) {
+      console.log('Populando catálogo de exercícios iniciais com vídeos...')
+      await Exercicio.insertMany([
+        {
+          nome: 'Supino Reto com Barra',
+          grupoMuscular: 'Peito',
+          subgrupo: 'Peitoral Maior',
+          nivelDificuldade: 'Iniciante',
+          videoId: 'rT7DgCr-3pg',
+          descricao:
+            'Exercício multiarticular fundamental para ganho de força e volume no peitoral.',
+          pontosAtencao: [
+            'Mantenha as escápulas aduzidas e coladas no banco',
+            'Pés firmes no chão o tempo todo',
+            'Desça a barra controladamente na linha dos mamilos'
+          ],
+          errosComuns: [
+            'Bater a barra no peito com impacto',
+            'Abrir excessivamente os cotovelos a 90 graus',
+            'Tirar o quadril do banco durante a subida'
+          ]
+        },
+        {
+          nome: 'Agachamento Livre',
+          grupoMuscular: 'Pernas',
+          subgrupo: 'Quadríceps e Glúteos',
+          nivelDificuldade: 'Intermediário',
+          videoId: 'bEv6CCg2BC8',
+          descricao:
+            'O principal movimento para força funcional e desenvolvimento completo de membros inferiores.',
+          pontosAtencao: [
+            'Base com pés na largura dos ombros ou ligeiramente mais aberta',
+            'Abdômen contraído (manobra de Valsalva)',
+            'Joelhos apontando na mesma direção das pontas dos pés'
+          ],
+          errosComuns: [
+            'Projetar os joelhos para dentro no esforço (valgo dinâmico)',
+            'Curvar a lombar no ponto mais baixo',
+            'Tirar os calcanhares do solo'
+          ]
+        },
+        {
+          nome: 'Puxada Frontal no Pulley',
+          grupoMuscular: 'Costas',
+          subgrupo: 'Latíssimo do Dorso',
+          nivelDificuldade: 'Iniciante',
+          videoId: 'CAwf7n6Luuc',
+          descricao:
+            'Excelente para largura das costas e controle escapular antes de evoluir para a barra fixa.',
+          pontosAtencao: [
+            'Inicie o movimento puxando os ombros para baixo',
+            'Puxe a barra em direção à parte superior do esterno',
+            'Mantenha o peito aberto e estufado'
+          ],
+          errosComuns: [
+            'Inclinar excessivamente o tronco para trás usando impulso',
+            'Puxar a barra por trás da nuca',
+            'Encolher os ombros na subida'
+          ]
+        },
+        {
+          nome: 'Rosca Direta com Barra W',
+          grupoMuscular: 'Braços',
+          subgrupo: 'Bíceps Braquial',
+          nivelDificuldade: 'Iniciante',
+          videoId: 'kwG2ipFRgfo',
+          descricao:
+            'Movimento isolador de bíceps com menor estresse articular nos punhos graças à barra W.',
+          pontosAtencao: [
+            'Cotovelos fixos ao lado do tronco',
+            'Movimento cadenciado na descida (fase excêntrica)',
+            'Pegada firme sem dobrar os punhos'
+          ],
+          errosComuns: [
+            'Balançar o tronco para impulsionar a subida',
+            'Jogar os cotovelos para frente no topo do movimento'
+          ]
+        }
+      ])
+      console.log('✓ Catálogo de exercícios e vídeos criado com sucesso!')
+    }
+  } catch (err) {
+    console.error('Erro ao semear exercícios:', err.message)
+  }
+}
+
 // ========================================================
-// ROTA 1: CADASTRO DE NOVO ALUNO (POST /api/cadastro)
+// ROTAS DE CADASTRO E LOGIN
 // ========================================================
 app.post('/api/cadastro', async (req, res) => {
-  console.log('\n--- [NOVO CADASTRO RECEBIDO] ---')
-  console.log('Dados recebidos:', req.body)
-
   try {
     const { nome, email, senha, nascimento, objetivo, peso, observacoes } =
       req.body
@@ -94,13 +199,19 @@ app.post('/api/cadastro', async (req, res) => {
     if (!nome || !email || !senha || !nascimento) {
       return res.status(400).json({
         sucesso: false,
-        mensagem:
-          'Preencha todos os campos obrigatórios (nome, e-mail, senha e nascimento).'
+        mensagem: 'Preencha todos os campos obrigatórios.'
       })
     }
 
     const emailLimpo = String(email).toLowerCase().trim()
     const senhaLimpa = String(senha).trim()
+
+    if (senhaLimpa.length > 6) {
+      return res.status(400).json({
+        sucesso: false,
+        mensagem: 'A senha deve ter no máximo 6 caracteres.'
+      })
+    }
 
     const novoUsuario = new Usuario({
       nome: String(nome).trim(),
@@ -113,10 +224,6 @@ app.post('/api/cadastro', async (req, res) => {
     })
 
     await novoUsuario.save()
-    console.log(
-      `✓ Conta criada com sucesso para: ${novoUsuario.nome} (${novoUsuario.email})`
-    )
-
     return res.status(201).json({
       sucesso: true,
       mensagem: 'Cadastro realizado com sucesso!',
@@ -130,23 +237,14 @@ app.post('/api/cadastro', async (req, res) => {
         mensagem: 'Este e-mail já está cadastrado no sistema.'
       })
     }
-
-    console.error('Erro ao salvar no banco:', erro.message)
     return res.status(500).json({
       sucesso: false,
-      mensagem: 'Erro interno no servidor ao realizar cadastro.'
+      mensagem: 'Erro interno ao realizar cadastro.'
     })
   }
 })
 
-// ========================================================
-// ROTA 2: VALIDAÇÃO DE LOGIN (POST /login-endpoint)
-// Suporta tanto requisição via Formulário HTML quanto via Fetch (JSON)
-// ========================================================
-app.post('/api/login', async (req, res) => {
-  console.log('\n--- [TENTATIVA DE LOGIN] ---')
-  console.log('Dados recebidos na requisição:', req.body)
-
+const processarLogin = async (req, res) => {
   const isFetchRequest =
     req.is('json') || req.headers['content-type']?.includes('application/json')
 
@@ -166,14 +264,10 @@ app.post('/api/login', async (req, res) => {
 
     const emailBusca = String(email).toLowerCase().trim()
     const senhaDigitada = String(senha).trim()
-
-    // 1. Busca o aluno no MongoDB
     const usuario = await Usuario.findOne({ email: emailBusca })
 
-    // 2. Se não existir no banco
     if (!usuario) {
-      console.log(`❌ E-mail não encontrado no sistema: "${emailBusca}"`)
-      const msg = `O e-mail "${emailBusca}" não possui cadastro.\\nFaça a matrícula primeiro na tela de cadastro.`
+      const msg = `O e-mail "${emailBusca}" não possui cadastro.\\nFaça a matrícula primeiro.`
       if (isFetchRequest)
         return res.status(401).json({ sucesso: false, mensagem: msg })
       return res
@@ -183,14 +277,7 @@ app.post('/api/login', async (req, res) => {
         )
     }
 
-    // 3. Validação da senha
-    const senhaCadastrada = String(usuario.senha).trim()
-    console.log(
-      `Validação: Digitada="${senhaDigitada}" | Salva="${senhaCadastrada}"`
-    )
-
-    if (senhaDigitada !== senhaCadastrada) {
-      console.log(`❌ Senha incorreta para o e-mail: ${usuario.email}`)
+    if (usuario.senha !== senhaDigitada) {
       const msg = 'Senha incorreta! Verifique os dados digitados.'
       if (isFetchRequest)
         return res.status(401).json({ sucesso: false, mensagem: msg })
@@ -201,33 +288,25 @@ app.post('/api/login', async (req, res) => {
         )
     }
 
-    // 4. Sucesso: Login aprovado
-    console.log(
-      `✓ Acesso autorizado para: ${usuario.nome} (ID: ${usuario._id})`
-    )
-
     if (isFetchRequest) {
       return res.json({
         sucesso: true,
-        mensagem: 'Login realizado com sucesso!',
         redirectUrl: `/home.html?id=${usuario._id}`
       })
     }
-
-    // Redirecionamento padrão de formulário
     res.redirect(`/home.html?id=${usuario._id}`)
   } catch (erro) {
-    console.error('Erro ao processar login:', erro)
     if (isFetchRequest)
-      return res
-        .status(500)
-        .json({ sucesso: false, mensagem: 'Erro interno no servidor.' })
+      return res.status(500).json({ sucesso: false, mensagem: 'Erro interno.' })
     res.status(500).send('Erro interno ao tentar autenticar.')
   }
-})
+}
+
+app.post('/api/login', processarLogin)
+app.post('/login-endpoint', processarLogin)
 
 // ========================================================
-// ROTA 3: BUSCAR DADOS DO ALUNO AUTENTICADO (GET /api/aluno)
+// ROTAS DE ALUNO
 // ========================================================
 app.get('/api/aluno', async (req, res) => {
   try {
@@ -240,19 +319,14 @@ app.get('/api/aluno', async (req, res) => {
       aluno = await Usuario.findOne().sort({ _id: -1 })
     }
 
-    if (!aluno) {
-      return res.status(404).json({ erro: 'Nenhum aluno cadastrado.' })
-    }
-
+    if (!aluno)
+      return res.status(404).json({ erro: 'Nenhum aluno encontrado.' })
     res.json(aluno)
   } catch (erro) {
     res.status(500).json({ erro: 'Erro ao consultar banco de dados.' })
   }
 })
 
-// ========================================================
-// ROTA 4: ATUALIZAR DADOS DO ALUNO (POST /api/aluno/atualizar)
-// ========================================================
 app.post('/api/aluno/atualizar', async (req, res) => {
   try {
     const { id, objetivo, peso, observacoes } = req.body
@@ -267,6 +341,47 @@ app.post('/api/aluno/atualizar', async (req, res) => {
   }
 })
 
+// ========================================================
+// ROTAS DE EXERCÍCIOS E VÍDEOS (NOVO)
+// ========================================================
+app.get('/api/exercicios', async (req, res) => {
+  try {
+    const { grupo } = req.query
+    const filtro = grupo && grupo !== 'Todos' ? { grupoMuscular: grupo } : {}
+    const exercicios = await Exercicio.find(filtro).sort({ nome: 1 })
+    res.json(exercicios)
+  } catch (erro) {
+    res.status(500).json({ erro: 'Erro ao buscar lista de exercícios.' })
+  }
+})
+
+app.get('/api/exercicios/:id', async (req, res) => {
+  try {
+    const exercicio = await Exercicio.findById(req.params.id)
+    if (!exercicio)
+      return res.status(404).json({ erro: 'Exercício não encontrado.' })
+    res.json(exercicio)
+  } catch (erro) {
+    res.status(500).json({ erro: 'Erro ao buscar detalhes do exercício.' })
+  }
+})
+
+// Rota para zerar banco em testes
+app.get('/api/limpar-banco', async (req, res) => {
+  try {
+    await mongoose.connection.dropDatabase()
+    await semearExerciciosIniciais()
+    res.send(`
+      <div style="font-family: sans-serif; text-align: center; margin-top: 50px;">
+        <h2 style="color: #16a34a;">✓ Banco de dados apagado e reinicializado!</h2>
+        <a href="/cadastro.html" style="color: #0284c7; font-weight: bold;">Ir para a tela de Cadastro</a>
+      </div>
+    `)
+  } catch (erro) {
+    res.status(500).send('Erro ao tentar apagar o banco: ' + erro.message)
+  }
+})
+
 // Inicialização
 app.listen(PORT, () => {
   console.log(`=========================================`)
@@ -274,5 +389,6 @@ app.listen(PORT, () => {
   console.log(`Cadastro:            http://localhost:${PORT}/cadastro.html`)
   console.log(`Login:               http://localhost:${PORT}/login.html`)
   console.log(`Home / Painel:       http://localhost:${PORT}/home.html`)
+  console.log(`Vídeos / Exercícios: http://localhost:${PORT}/exercicios.html`)
   console.log(`=========================================`)
 })

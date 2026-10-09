@@ -36,6 +36,28 @@
         color: #38bdf8;
       }
 
+      .header-actions {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+      }
+
+      .btn-videos {
+        color: #38bdf8;
+        text-decoration: none;
+        font-size: 0.9rem;
+        font-weight: 600;
+        padding: 6px 14px;
+        border: 1px solid #38bdf8;
+        border-radius: 6px;
+        transition: all 0.2s;
+      }
+
+      .btn-videos:hover {
+        background-color: #38bdf8;
+        color: #0f172a;
+      }
+
       .btn-sair {
         color: #f87171;
         text-decoration: none;
@@ -107,6 +129,43 @@
         animation: fadeIn 0.3s ease-in-out;
       }
 
+      .banner-videos {
+        background: linear-gradient(135deg, #0f172a, #1e293b);
+        color: white;
+        padding: 20px;
+        border-radius: 8px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 24px;
+      }
+
+      .banner-videos h3 {
+        color: #38bdf8;
+        margin-bottom: 4px;
+      }
+
+      .banner-videos p {
+        color: #94a3b8;
+        font-size: 0.9rem;
+      }
+
+      .btn-assistir {
+        background-color: #0284c7;
+        color: white;
+        text-decoration: none;
+        font-size: 0.9rem;
+        font-weight: 700;
+        padding: 10px 18px;
+        border-radius: 6px;
+        white-space: nowrap;
+        transition: background-color 0.2s;
+      }
+
+      .btn-assistir:hover {
+        background-color: #0369a1;
+      }
+
       .aluno-dados-grid {
         display: grid;
         grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
@@ -117,7 +176,7 @@
 
       .item-grid {
         display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+        grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
         gap: 16px;
         margin-top: 20px;
       }
@@ -127,6 +186,9 @@
         border: 1px solid #e2e8f0;
         padding: 16px;
         border-radius: 6px;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
       }
 
       .item-card h4 {
@@ -169,6 +231,19 @@
         background-color: #0369a1;
       }
 
+      .btn-treino-video {
+        margin-top: 12px;
+        display: inline-block;
+        color: #0284c7;
+        text-decoration: none;
+        font-weight: 600;
+        font-size: 0.85rem;
+      }
+
+      .btn-treino-video:hover {
+        text-decoration: underline;
+      }
+
       @keyframes fadeIn {
         from {
           opacity: 0;
@@ -184,14 +259,19 @@
   <body>
     <header>
       <h1>Espaço Fitness & Treino</h1>
-      <!-- Botão de Sair com função de Logout integrada -->
-      <a href="#" onclick="fazerLogout(event)" class="btn-sair">Sair</a>
+      <div class="header-actions">
+        <a href="exercicios.html" class="btn-videos">▶ Vídeos & Tutoriais</a>
+        <a href="#" onclick="fazerLogout(event)" class="btn-sair">Sair</a>
+      </div>
     </header>
 
     <main>
       <nav class="tabs-container">
         <button class="tab-btn active" onclick="abrirAba('aluno', this)">
           ÁREA DO ALUNO
+        </button>
+        <button class="tab-btn" onclick="abrirAba('ficha', this)">
+          FICHA DE TREINO
         </button>
         <button class="tab-btn" onclick="abrirAba('aulas', this)">AULAS</button>
         <button class="tab-btn" onclick="abrirAba('maquinas', this)">
@@ -203,16 +283,20 @@
         <button class="tab-btn" onclick="abrirAba('profissionais', this)">
           PROFISSIONAIS
         </button>
-        <button class="tab-btn" onclick="abrirAba('ficha', this)">
-          FICHA DE TREINO
-        </button>
       </nav>
 
       <!-- ABA: ÁREA DO ALUNO -->
       <section id="aluno" class="tab-content active">
-        <h2>Área do Aluno</h2>
+        <!-- Banner de Acesso aos Vídeos -->
+        <div class="banner-videos">
+          <div>
+            <h3>Biblioteca de Vídeos & Postura</h3>
+            <p>Assista aos tutoriais de execução correta para evitar lesões.</p>
+          </div>
+          <a href="exercicios.html" class="btn-assistir">Ver Vídeos</a>
+        </div>
 
-        <!-- Cards com as informações vindas do MongoDB -->
+        <h2>Área do Aluno</h2>
         <div class="aluno-dados-grid">
           <div class="item-card">
             <h4>Nome do Aluno</h4>
@@ -230,7 +314,6 @@
           </div>
         </div>
 
-        <!-- Formulário de dados complementares -->
         <form id="form-aluno" onsubmit="salvarDadosAluno(event)">
           <div class="form-group">
             <label for="objetivo">Objetivo Atual do Treino</label>
@@ -268,6 +351,54 @@
             style="margin-left: 15px; font-weight: 500"
           ></span>
         </form>
+      </section>
+
+      <!-- ABA: FICHA DE TREINO (COM LINKS PARA OS VÍDEOS) -->
+      <section id="ficha" class="tab-content">
+        <h2>Ficha de Treino Personalizada</h2>
+        <p style="color: #64748b; margin-top: 4px">
+          Clique em "Ver Execução em Vídeo" para assistir ao tutorial do
+          exercício.
+        </p>
+
+        <div class="item-grid">
+          <div class="item-card">
+            <div>
+              <h4>Supino Reto com Barra</h4>
+              <p>4 séries de 10 a 12 repetições</p>
+            </div>
+            <a href="exercicios.html" class="btn-treino-video"
+              >▶ Ver Execução em Vídeo</a
+            >
+          </div>
+          <div class="item-card">
+            <div>
+              <h4>Agachamento Livre</h4>
+              <p>4 séries de 8 a 10 repetições</p>
+            </div>
+            <a href="exercicios.html" class="btn-treino-video"
+              >▶ Ver Execução em Vídeo</a
+            >
+          </div>
+          <div class="item-card">
+            <div>
+              <h4>Puxada Frontal</h4>
+              <p>3 séries de 12 repetições</p>
+            </div>
+            <a href="exercicios.html" class="btn-treino-video"
+              >▶ Ver Execução em Vídeo</a
+            >
+          </div>
+          <div class="item-card">
+            <div>
+              <h4>Rosca Direta com Barra W</h4>
+              <p>3 séries de 12 a 15 repetições</p>
+            </div>
+            <a href="exercicios.html" class="btn-treino-video"
+              >▶ Ver Execução em Vídeo</a
+            >
+          </div>
+        </div>
       </section>
 
       <!-- DEMAIS ABAS -->
@@ -318,16 +449,6 @@
           </div>
         </div>
       </section>
-
-      <section id="ficha" class="tab-content">
-        <h2>Ficha de Treino</h2>
-        <div class="item-grid">
-          <div class="item-card">
-            <h4>Treino A</h4>
-            <p>Peito e Tríceps</p>
-          </div>
-        </div>
-      </section>
     </main>
 
     <script>
@@ -344,7 +465,6 @@
         botaoClicado.classList.add('active')
       }
 
-      // Função de Logout: limpa os dados da sessão e vai para a tela de login
       function fazerLogout(evento) {
         if (evento) evento.preventDefault()
         sessionStorage.removeItem('alunoLogadoId')
@@ -356,7 +476,6 @@
         const emailElem = document.getElementById('aluno-email')
         const nascElem = document.getElementById('aluno-nascimento')
 
-        // 1. Identifica o ID do aluno vindo da URL (?id=...) ou da sessão
         const urlParams = new URLSearchParams(window.location.search)
         let alunoId = urlParams.get('id')
 
@@ -366,7 +485,6 @@
           alunoId = sessionStorage.getItem('alunoLogadoId')
         }
 
-        // 2. Se não houver aluno autenticado, redireciona para a tela de login
         if (!alunoId) {
           alert('Por favor, faça login para acessar o painel.')
           window.location.href = '/login.html'
@@ -374,7 +492,6 @@
         }
 
         try {
-          // 3. Busca estritamente o aluno autenticado pelo ID
           const resposta = await fetch(`/api/aluno?id=${alunoId}`)
 
           if (!resposta.ok) {
@@ -386,28 +503,27 @@
           const dados = await resposta.json()
           idAlunoCarregado = dados._id
 
-          // Nome
           nomeElem.textContent =
             dados.nome || (dados.email ? dados.email.split('@')[0] : 'Aluno')
-
-          // E-mail
           emailElem.textContent = dados.email || '-'
 
-          // Nascimento e Idade calculada
+          // Data com tratamento de fuso UTC
           if (dados.nascimento) {
             const dataNasc = new Date(dados.nascimento)
             const hoje = new Date()
-            let idade = hoje.getFullYear() - dataNasc.getFullYear()
-            const mes = hoje.getMonth() - dataNasc.getMonth()
-            if (mes < 0 || (mes === 0 && hoje.getDate() < dataNasc.getDate())) {
+            let idade = hoje.getFullYear() - dataNasc.getUTCFullYear()
+            const mes = hoje.getMonth() - dataNasc.getUTCMonth()
+            if (
+              mes < 0 ||
+              (mes === 0 && hoje.getDate() < dataNasc.getUTCDate())
+            ) {
               idade--
             }
-            nascElem.textContent = `${dataNasc.toLocaleDateString('pt-BR')} (${idade} anos)`
+            nascElem.textContent = `${dataNasc.toLocaleDateString('pt-BR', { timeZone: 'UTC' })} (${idade} anos)`
           } else {
             nascElem.textContent = 'Não informada'
           }
 
-          // Formulário do aluno
           if (dados.objetivo)
             document.getElementById('objetivo').value = dados.objetivo
           if (dados.peso) document.getElementById('peso').value = dados.peso
