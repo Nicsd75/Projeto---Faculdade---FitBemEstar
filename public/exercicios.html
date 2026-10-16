@@ -115,6 +115,8 @@
         padding: 16px;
         cursor: pointer;
         transition: all 0.2s;
+        text-align: left;
+        width: 100%;
       }
 
       .card-item:hover {
@@ -158,7 +160,7 @@
         overflow: hidden;
         border-radius: 8px;
         background-color: #000;
-        margin-bottom: 20px;
+        margin-bottom: 16px;
       }
 
       .video-wrapper iframe {
@@ -170,10 +172,34 @@
         border: 0;
       }
 
+      .cabecalho-detalhes {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        flex-wrap: wrap;
+        gap: 10px;
+        margin-bottom: 8px;
+      }
+
       .detalhes h2 {
         font-size: 1.4rem;
         color: #38bdf8;
-        margin-bottom: 8px;
+      }
+
+      .link-externo {
+        display: inline-block;
+        font-size: 0.8rem;
+        color: #38bdf8;
+        text-decoration: none;
+        border: 1px solid #38bdf8;
+        padding: 5px 12px;
+        border-radius: 6px;
+        transition: all 0.2s;
+      }
+
+      .link-externo:hover {
+        background-color: #38bdf8;
+        color: #0f172a;
       }
 
       .detalhes p {
@@ -253,20 +279,33 @@
     <main>
       <!-- Filtros por Grupo Muscular -->
       <div class="filtros-container">
-        <button class="filtro-btn active" onclick="filtrarGrupo('Todos', this)">
+        <button
+          type="button"
+          class="filtro-btn active"
+          onclick="filtrarGrupo('Todos', this)"
+        >
           Todos
         </button>
-        <button class="filtro-btn" onclick="filtrarGrupo('Peito', this)">
-          Peito
-        </button>
-        <button class="filtro-btn" onclick="filtrarGrupo('Costas', this)">
-          Costas
-        </button>
-        <button class="filtro-btn" onclick="filtrarGrupo('Pernas', this)">
+        <button
+          type="button"
+          class="filtro-btn"
+          onclick="filtrarGrupo('Pernas', this)"
+        >
           Pernas
         </button>
-        <button class="filtro-btn" onclick="filtrarGrupo('Braços', this)">
-          Braços
+        <button
+          type="button"
+          class="filtro-btn"
+          onclick="filtrarGrupo('Bíceps', this)"
+        >
+          Bíceps
+        </button>
+        <button
+          type="button"
+          class="filtro-btn"
+          onclick="filtrarGrupo('Costas', this)"
+        >
+          Costas
         </button>
       </div>
 
@@ -279,11 +318,38 @@
         <!-- Reprodutor Central e Orientações Técnicas -->
         <div class="player-container">
           <div class="video-wrapper">
-            <iframe id="videoPlayer" src="" allowfullscreen></iframe>
+            <iframe
+              id="videoPlayer"
+              src="about:blank"
+              title="Reprodutor de vídeo de exercícios"
+              allow="
+                accelerometer;
+                autoplay;
+                clipboard-write;
+                encrypted-media;
+                gyroscope;
+                picture-in-picture;
+                web-share;
+              "
+              referrerpolicy="strict-origin-when-cross-origin"
+              allowfullscreen
+            ></iframe>
           </div>
 
           <div class="detalhes">
-            <h2 id="videoTitulo">Selecione um exercício</h2>
+            <div class="cabecalho-detalhes">
+              <h2 id="videoTitulo">Selecione um exercício</h2>
+              <a
+                id="linkYoutubeExterno"
+                class="link-externo"
+                href="https://www.youtube.com"
+                target="_blank"
+                rel="noopener noreferrer"
+                style="display: none"
+              >
+                ↗ Assistir no YouTube
+              </a>
+            </div>
             <p id="videoDescricao">
               Clique em qualquer movimento da lista para assistir à aula
               demonstrativa.
@@ -291,7 +357,7 @@
 
             <div class="dicas-grid">
               <div class="dica-box sucesso">
-                <h4>Pontos de Atenção & Postura</h4>
+                <h4>Pontos de Atenção &amp; Postura</h4>
                 <ul id="listaPontos">
                   <li>Selecione um movimento para visualizar as instruções.</li>
                 </ul>
@@ -313,6 +379,123 @@
     </main>
 
     <script>
+      // Base de exercícios separada por grupo muscular com IDs de 11 caracteres validados
+      const EXERCICIOS_PADRAO = [
+        // ================= PERNAS =================
+        {
+          _id: 'pernas-1',
+          nome: 'Leg Press 45° (Execução e Ajustes)',
+          grupoMuscular: 'Pernas',
+          nivelDificuldade: 'Intermediário',
+          videoId: 'EotSw18oR9w',
+          descricao:
+            'Demonstração de posicionamento dos pés, ajuste do encosto e estabilização do quadril para máxima ativação no Leg Press.',
+          pontosAtencao: [
+            'Ajuste a inclinação do encosto para obter boa amplitude com conforto.',
+            'Mantenha os pés inteiros apoiados na plataforma.',
+            'Segure firme nos apoios laterais mantendo o quadril colado no banco.'
+          ],
+          errosComuns: [
+            'Deixar os calcanhares descolarem da plataforma durante a descida.',
+            'Levantar o quadril e curvar a lombar na fase excêntrica.'
+          ]
+        },
+        {
+          _id: 'pernas-2',
+          nome: 'Leg Press (Ativação e Segurança)',
+          grupoMuscular: 'Pernas',
+          nivelDificuldade: 'Iniciante',
+          videoId: 'S4c9EYGYDA8',
+          descricao:
+            'Comparativo prático entre repetições curtas, execução perigosa e a amplitude ideal com segurança articular.',
+          pontosAtencao: [
+            'Desça com amplitude completa até o limite onde a lombar continua apoiada.',
+            'Suba de forma controlada mantendo a tensão muscular constante.'
+          ],
+          errosComuns: [
+            'Travar totalmente a articulação dos joelhos no topo do movimento.',
+            'Fazer repetições muito curtas sem flexionar adequadamente os joelhos.'
+          ]
+        },
+
+        // ================= BÍCEPS =================
+        {
+          _id: 'biceps-1',
+          nome: 'Rosca Direta com Halteres',
+          grupoMuscular: 'Bíceps',
+          nivelDificuldade: 'Iniciante',
+          videoId: 'MKWBV29S6c0',
+          descricao:
+            'Técnica correta para isolar o bíceps com halteres, mantendo o alinhamento dos braços e a estabilidade escapular.',
+          pontosAtencao: [
+            'Mantenha os cotovelos estabilizados ao lado do tronco.',
+            'Suba os halteres alinhados à frente do corpo.',
+            'Mantenha os ombros abaixados durante toda a contração.'
+          ],
+          errosComuns: [
+            'Projetar os cotovelos para a frente na subida (jogando tensão no ombro).',
+            'Encolher o trapézio ou abrir os braços para as laterais.',
+            'Usar impulso da lombar para subir a carga.'
+          ]
+        },
+        {
+          _id: 'biceps-2',
+          nome: 'Rosca Bíceps na Polia Baixa (Cabo)',
+          grupoMuscular: 'Bíceps',
+          nivelDificuldade: 'Intermediário',
+          videoId: 'CrbTqNOlFgE', // ID completo de 11 caracteres corrigido
+          descricao:
+            'Execução na polia baixa para manter tensão contínua no bíceps durante toda a amplitude do movimento.',
+          pontosAtencao: [
+            'Dê um passo à frente ou mantenha os cotovelos estáveis ao lado do corpo.',
+            'Controle a descida (fase excêntrica) sem deixar o peso bater.',
+            'Mantenha os punhos firmes e alinhados com o antebraço.'
+          ],
+          errosComuns: [
+            'Deixar o cabo puxar os ombros para a frente na descida.',
+            'Balançar o tronco para compensar o excesso de carga.'
+          ]
+        },
+
+        // ================= COSTAS =================
+        {
+          _id: 'costas-1',
+          nome: 'Remada Baixa no Cabo (Postura e Pegada)',
+          grupoMuscular: 'Costas',
+          nivelDificuldade: 'Intermediário',
+          videoId: 'qD1WZ5pSuvk',
+          descricao:
+            'Ajustes técnicos na remada sentada com triângulo para focar o trabalho nas dorsais e reduzir a fadiga precoce do antebraço.',
+          pontosAtencao: [
+            'Use as mãos como "ganchos" sem dobrar os punhos para trás.',
+            'Direcione a puxada para a parte baixa do abdômen/quadril.',
+            'Mantenha os ombros abaixados (deprimidos) ao puxar.'
+          ],
+          errosComuns: [
+            'Dobrar os punhos na puxada, sobrecarregando os antebraços.',
+            'Puxar o triângulo muito alto (na linha do peito) abrindo os cotovelos.',
+            'Encolher o trapézio durante a fase de contração.'
+          ]
+        },
+        {
+          _id: 'costas-2',
+          nome: 'Remada Baixa (Correção de Trajetória)',
+          grupoMuscular: 'Costas',
+          nivelDificuldade: 'Iniciante',
+          videoId: 'LyZH4UGdDTc',
+          descricao:
+            'Comparação direta entre puxada alta com foco excessivo nos braços vs. trajetória correta para recrutamento dorsal.',
+          pontosAtencao: [
+            'Alongue a dorsal à frente com controle antes de iniciar a puxada.',
+            'Conduza o movimento pelos cotovelos, mantendo-os próximos ao tronco.'
+          ],
+          errosComuns: [
+            'Puxar o cabo para cima flexionando excessivamente os cotovelos.',
+            'Transformar a remada de costas em um exercício de bíceps e deltoide posterior.'
+          ]
+        }
+      ]
+
       let todosExercicios = []
 
       // Mantém a sessão do aluno ao voltar
@@ -323,62 +506,78 @@
         document.getElementById('linkVoltar').href = `home.html?id=${alunoId}`
       }
 
-      async function carregarExercicios(grupo = 'Todos') {
-        try {
-          const url =
-            grupo === 'Todos'
-              ? '/api/exercicios'
-              : `/api/exercicios?grupo=${encodeURIComponent(grupo)}`
-          const res = await fetch(url)
-          todosExercicios = await res.json()
+      // Normaliza texto (remove acentos) para evitar erros na filtragem
+      function normalizarTexto(texto) {
+        return (texto || '')
+          .normalize('NFD')
+          .replace(/[\u0300-\u036f]/g, '')
+          .toLowerCase()
+          .trim()
+      }
 
-          const listaContainer = document.getElementById('containerLista')
-          listaContainer.innerHTML = ''
+      function carregarExercicios(grupo = 'Todos', usarIdDaUrl = false) {
+        const listaContainer = document.getElementById('containerLista')
+        listaContainer.innerHTML = ''
 
-          if (todosExercicios.length === 0) {
-            listaContainer.innerHTML =
-              '<p style="color: #94a3b8; padding: 10px;">Nenhum exercício encontrado nesta categoria.</p>'
-            return
-          }
+        todosExercicios =
+          grupo === 'Todos'
+            ? [...EXERCICIOS_PADRAO]
+            : EXERCICIOS_PADRAO.filter(
+                ex =>
+                  normalizarTexto(ex.grupoMuscular) === normalizarTexto(grupo)
+              )
 
-          todosExercicios.forEach((ex, index) => {
-            const card = document.createElement('div')
-            card.className = `card-item ${index === 0 ? 'selecionado' : ''}`
-            card.id = `card-${ex._id}`
-            card.onclick = () => selecionarExercicio(ex)
+        if (todosExercicios.length === 0) {
+          listaContainer.innerHTML =
+            '<p style="color: #94a3b8; padding: 10px;">Nenhum exercício encontrado nesta categoria.</p>'
+          return
+        }
 
-            card.innerHTML = `
-              <h3>${ex.nome}</h3>
-              <span class="badge">${ex.grupoMuscular}</span>
-              <span class="badge">${ex.nivelDificuldade}</span>
-            `
+        todosExercicios.forEach(ex => {
+          const card = document.createElement('div')
+          card.className = 'card-item'
+          card.id = `card-${ex._id}`
+          card.addEventListener('click', () => selecionarExercicio(ex))
 
-            listaContainer.appendChild(card)
-          })
+          card.innerHTML = `
+            <h3>${ex.nome}</h3>
+            <span class="badge">${ex.grupoMuscular}</span>
+            <span class="badge">${ex.nivelDificuldade}</span>
+          `
 
-          // Seleciona o primeiro ou o id que veio na URL
-          const idUrl = new URLSearchParams(window.location.search).get('exId')
-          const alvo = idUrl
-            ? todosExercicios.find(e => e._id === idUrl)
-            : todosExercicios[0]
-          if (alvo) selecionarExercicio(alvo)
-        } catch (err) {
-          console.error(err)
-          document.getElementById('containerLista').innerHTML =
-            '<p style="color: #f87171; padding: 10px;">Erro ao carregar dados.</p>'
+          listaContainer.appendChild(card)
+        })
+
+        // Se for o carregamento inicial, verifica se há exId na URL; caso contrário, pega o primeiro da lista filtrada
+        const idUrl = usarIdDaUrl
+          ? new URLSearchParams(window.location.search).get('exId')
+          : null
+
+        const alvo =
+          (idUrl && todosExercicios.find(e => e._id === idUrl)) ||
+          todosExercicios[0]
+
+        if (alvo) {
+          selecionarExercicio(alvo)
         }
       }
 
       function selecionarExercicio(ex) {
+        // Destaca o card selecionado
         document
           .querySelectorAll('.card-item')
           .forEach(c => c.classList.remove('selecionado'))
         const cardAtivo = document.getElementById(`card-${ex._id}`)
         if (cardAtivo) cardAtivo.classList.add('selecionado')
 
-        // Atualiza o player de vídeo do YouTube
-        document.getElementById('videoPlayer').src =
-          `https://www.youtube.com/embed/${ex.videoId}?autoplay=0&rel=0`
+        // Atualiza o player de vídeo do YouTube com parâmetros compatíveis de controles
+        const player = document.getElementById('videoPlayer')
+        player.src = `https://www.youtube.com/embed/${ex.videoId}?rel=0&controls=1&playsinline=1`
+
+        // Atualiza o botão de link externo para abrir direto no YouTube
+        const linkExterno = document.getElementById('linkYoutubeExterno')
+        linkExterno.href = `https://www.youtube.com/watch?v=${ex.videoId}`
+        linkExterno.style.display = 'inline-block'
 
         // Atualiza textos
         document.getElementById('videoTitulo').textContent = ex.nome
@@ -408,11 +607,13 @@
         document
           .querySelectorAll('.filtro-btn')
           .forEach(b => b.classList.remove('active'))
-        btnClicado.classList.add('active')
-        carregarExercicios(grupo)
+        if (btnClicado) btnClicado.classList.add('active')
+        carregarExercicios(grupo, false)
       }
 
-      window.addEventListener('DOMContentLoaded', () => carregarExercicios())
+      window.addEventListener('DOMContentLoaded', () =>
+        carregarExercicios('Todos', true)
+      )
     </script>
   </body>
 </html>

@@ -129,43 +129,6 @@
         animation: fadeIn 0.3s ease-in-out;
       }
 
-      .banner-videos {
-        background: linear-gradient(135deg, #0f172a, #1e293b);
-        color: white;
-        padding: 20px;
-        border-radius: 8px;
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        margin-bottom: 24px;
-      }
-
-      .banner-videos h3 {
-        color: #38bdf8;
-        margin-bottom: 4px;
-      }
-
-      .banner-videos p {
-        color: #94a3b8;
-        font-size: 0.9rem;
-      }
-
-      .btn-assistir {
-        background-color: #0284c7;
-        color: white;
-        text-decoration: none;
-        font-size: 0.9rem;
-        font-weight: 700;
-        padding: 10px 18px;
-        border-radius: 6px;
-        white-space: nowrap;
-        transition: background-color 0.2s;
-      }
-
-      .btn-assistir:hover {
-        background-color: #0369a1;
-      }
-
       .aluno-dados-grid {
         display: grid;
         grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
@@ -176,7 +139,7 @@
 
       .item-grid {
         display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+        grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
         gap: 16px;
         margin-top: 20px;
       }
@@ -184,8 +147,8 @@
       .item-card {
         background: #f8fafc;
         border: 1px solid #e2e8f0;
-        padding: 16px;
-        border-radius: 6px;
+        padding: 18px;
+        border-radius: 8px;
         display: flex;
         flex-direction: column;
         justify-content: space-between;
@@ -193,7 +156,190 @@
 
       .item-card h4 {
         color: #0369a1;
+        font-size: 1.05rem;
+        margin-bottom: 8px;
+      }
+
+      .item-card p {
+        color: #475569;
+        font-size: 0.9rem;
+        line-height: 1.4;
+      }
+
+      /* Botão para vídeos nos cards de treino */
+      .btn-treino-video {
+        margin-top: 16px;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 6px;
+        background-color: #e0f2fe;
+        color: #0369a1;
+        border: 1px solid #bae6fd;
+        padding: 9px 14px;
+        border-radius: 6px;
+        text-decoration: none;
+        font-weight: 600;
+        font-size: 0.85rem;
+        transition: all 0.2s;
+      }
+
+      .btn-treino-video:hover {
+        background-color: #0284c7;
+        color: #ffffff;
+        border-color: #0284c7;
+      }
+
+      /* Aviso de Administrador */
+      .aviso-admin {
+        margin-top: 20px;
+        background-color: #fef2f2;
+        border: 1px solid #fecaca;
+        border-left: 5px solid #dc2626;
+        border-radius: 8px;
+        padding: 24px;
+        display: flex;
+        align-items: center;
+        gap: 16px;
+      }
+
+      .aviso-admin-icone {
+        font-size: 2rem;
+        line-height: 1;
+      }
+
+      .aviso-admin h3 {
+        color: #991b1b;
+        font-size: 1.1rem;
+        margin-bottom: 4px;
+      }
+
+      .aviso-admin p {
+        color: #b91c1c;
+        font-size: 0.92rem;
+      }
+
+      /* Estilo dos Badges e Status */
+      .horario-topo {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 8px;
+      }
+
+      .horario-topo h4 {
+        margin-bottom: 0;
+      }
+
+      .status-badge {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        font-size: 0.78rem;
+        font-weight: 700;
+        padding: 4px 10px;
+        border-radius: 999px;
+      }
+
+      .status-badge.aberto {
+        background-color: #dcfce7;
+        color: #15803d;
+        border: 1px solid #86efac;
+      }
+
+      .status-badge.fechado {
+        background-color: #fee2e2;
+        color: #b91c1c;
+        border: 1px solid #fca5a5;
+      }
+
+      .horario-texto {
+        color: #475569;
+        font-size: 0.92rem;
+        font-weight: 500;
+      }
+
+      /* Layout da Área de Professores / Turnos */
+      .turnos-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+        gap: 24px;
+        margin-top: 16px;
+      }
+
+      .turno-coluna {
+        background: #f8fafc;
+        border: 1px solid #e2e8f0;
+        border-radius: 10px;
+        padding: 20px;
+      }
+
+      .turno-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        border-bottom: 2px solid #cbd5e1;
+        padding-bottom: 12px;
+        margin-bottom: 16px;
+      }
+
+      .turno-header h3 {
+        color: #0369a1;
+        font-size: 1.15rem;
+      }
+
+      .turno-horario-sub {
+        font-size: 0.85rem;
+        color: #64748b;
+        margin-top: 2px;
+        font-weight: 500;
+      }
+
+      .professores-lista {
+        display: flex;
+        flex-direction: column;
+        gap: 14px;
+      }
+
+      .professores-lista .item-card {
+        background: #ffffff;
+        border: 1px solid #cbd5e1;
+      }
+
+      .prof-card-topo {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
         margin-bottom: 6px;
+      }
+
+      .prof-card-topo h4 {
+        margin-bottom: 0;
+      }
+
+      /* Ponto de pulso animado para indicar presença em tempo real */
+      .pulse-dot {
+        width: 8px;
+        height: 8px;
+        border-radius: 50%;
+        background-color: #16a34a;
+        display: inline-block;
+        animation: pulseAnimation 1.6s infinite;
+      }
+
+      @keyframes pulseAnimation {
+        0% {
+          transform: scale(0.95);
+          box-shadow: 0 0 0 0 rgba(22, 163, 74, 0.7);
+        }
+        70% {
+          transform: scale(1.15);
+          box-shadow: 0 0 0 6px rgba(22, 163, 74, 0);
+        }
+        100% {
+          transform: scale(0.95);
+          box-shadow: 0 0 0 0 rgba(22, 163, 74, 0);
+        }
       }
 
       .form-group {
@@ -229,19 +375,6 @@
 
       .btn-salvar:hover {
         background-color: #0369a1;
-      }
-
-      .btn-treino-video {
-        margin-top: 12px;
-        display: inline-block;
-        color: #0284c7;
-        text-decoration: none;
-        font-weight: 600;
-        font-size: 0.85rem;
-      }
-
-      .btn-treino-video:hover {
-        text-decoration: underline;
       }
 
       @keyframes fadeIn {
@@ -287,15 +420,6 @@
 
       <!-- ABA: ÁREA DO ALUNO -->
       <section id="aluno" class="tab-content active">
-        <!-- Banner de Acesso aos Vídeos -->
-        <div class="banner-videos">
-          <div>
-            <h3>Biblioteca de Vídeos & Postura</h3>
-            <p>Assista aos tutoriais de execução correta para evitar lesões.</p>
-          </div>
-          <a href="exercicios.html" class="btn-assistir">Ver Vídeos</a>
-        </div>
-
         <h2>Área do Aluno</h2>
         <div class="aluno-dados-grid">
           <div class="item-card">
@@ -353,55 +477,56 @@
         </form>
       </section>
 
-      <!-- ABA: FICHA DE TREINO (COM LINKS PARA OS VÍDEOS) -->
+      <!-- ABA: FICHA DE TREINO -->
       <section id="ficha" class="tab-content">
-        <h2>Ficha de Treino Personalizada</h2>
-        <p style="color: #64748b; margin-top: 4px">
-          Clique em "Ver Execução em Vídeo" para assistir ao tutorial do
-          exercício.
-        </p>
+        <h2>Divisões de Treino</h2>
 
         <div class="item-grid">
+          <!-- Divisão: Braços -->
           <div class="item-card">
             <div>
-              <h4>Supino Reto com Barra</h4>
-              <p>4 séries de 10 a 12 repetições</p>
+              <h4>Treino de Braços (Bíceps)</h4>
+              <p>
+                Foco em isolamento de bíceps, controle excêntrico e alinhamento
+                de cotovelos (Rosca Direta com Halteres e Polia Baixa).
+              </p>
             </div>
-            <a href="exercicios.html" class="btn-treino-video"
-              >▶ Ver Execução em Vídeo</a
-            >
+            <a href="exercicios.html?exId=biceps-1" class="btn-treino-video">
+              ▶ Ver Tutoriais de Braços
+            </a>
           </div>
+
+          <!-- Divisão: Costas -->
           <div class="item-card">
             <div>
-              <h4>Agachamento Livre</h4>
-              <p>4 séries de 8 a 10 repetições</p>
+              <h4>Treino de Costas</h4>
+              <p>
+                Foco em expansão dorsal, estabilidade escapular e correção de
+                puxada (Remada Baixa no Cabo e ajustes de pegada).
+              </p>
             </div>
-            <a href="exercicios.html" class="btn-treino-video"
-              >▶ Ver Execução em Vídeo</a
-            >
+            <a href="exercicios.html?exId=costas-1" class="btn-treino-video">
+              ▶ Ver Tutoriais de Costas
+            </a>
           </div>
+
+          <!-- Divisão: Pernas -->
           <div class="item-card">
             <div>
-              <h4>Puxada Frontal</h4>
-              <p>3 séries de 12 repetições</p>
+              <h4>Treino de Pernas</h4>
+              <p>
+                Foco em força e hipertrofia de membros inferiores com amplitude
+                segura e estabilidade lombar (Leg Press 45°).
+              </p>
             </div>
-            <a href="exercicios.html" class="btn-treino-video"
-              >▶ Ver Execução em Vídeo</a
-            >
-          </div>
-          <div class="item-card">
-            <div>
-              <h4>Rosca Direta com Barra W</h4>
-              <p>3 séries de 12 a 15 repetições</p>
-            </div>
-            <a href="exercicios.html" class="btn-treino-video"
-              >▶ Ver Execução em Vídeo</a
-            >
+            <a href="exercicios.html?exId=pernas-1" class="btn-treino-video">
+              ▶ Ver Tutoriais de Pernas
+            </a>
           </div>
         </div>
       </section>
 
-      <!-- DEMAIS ABAS -->
+      <!-- ABA: AULAS -->
       <section id="aulas" class="tab-content">
         <h2>Modalidades e Aulas Coletivas</h2>
         <div class="item-grid">
@@ -416,36 +541,168 @@
         </div>
       </section>
 
+      <!-- ABA: MÁQUINAS -->
       <section id="maquinas" class="tab-content">
         <h2>Parque de Máquinas</h2>
-        <div class="item-grid">
-          <div class="item-card">
-            <h4>Leg Press 45°</h4>
-            <p>Status: Disponível</p>
-          </div>
-          <div class="item-card">
-            <h4>Crossover</h4>
-            <p>Status: Disponível</p>
+        <div class="aviso-admin">
+          <span class="aviso-admin-icone">🔒</span>
+          <div>
+            <h3>Apenas Administradores</h3>
+            <p>
+              Esta seção de controle e manutenção de máquinas é restrita apenas
+              para administradores do sistema.
+            </p>
           </div>
         </div>
       </section>
 
+      <!-- ABA: HORÁRIOS -->
       <section id="horarios" class="tab-content">
-        <h2>Horários</h2>
+        <h2>Horários de Funcionamento</h2>
+        <p style="color: #64748b; margin-top: 4px">
+          Confira os dias de atendimento e funcionamento da unidade.
+        </p>
+
         <div class="item-grid">
           <div class="item-card">
-            <h4>Segunda a Sexta</h4>
-            <p>06h00 às 23h00</p>
+            <div class="horario-topo">
+              <h4>Segunda-feira</h4>
+              <span class="status-badge aberto">● Aberto</span>
+            </div>
+            <p class="horario-texto">07:00 às 23:00</p>
+          </div>
+
+          <div class="item-card">
+            <div class="horario-topo">
+              <h4>Terça-feira</h4>
+              <span class="status-badge aberto">● Aberto</span>
+            </div>
+            <p class="horario-texto">07:00 às 23:00</p>
+          </div>
+
+          <div class="item-card">
+            <div class="horario-topo">
+              <h4>Quarta-feira</h4>
+              <span class="status-badge aberto">● Aberto</span>
+            </div>
+            <p class="horario-texto">07:00 às 23:00</p>
+          </div>
+
+          <div class="item-card">
+            <div class="horario-topo">
+              <h4>Quinta-feira</h4>
+              <span class="status-badge aberto">● Aberto</span>
+            </div>
+            <p class="horario-texto">07:00 às 23:00</p>
+          </div>
+
+          <div class="item-card">
+            <div class="horario-topo">
+              <h4>Sexta-feira</h4>
+              <span class="status-badge aberto">● Aberto</span>
+            </div>
+            <p class="horario-texto">07:00 às 23:00</p>
+          </div>
+
+          <div class="item-card">
+            <div class="horario-topo">
+              <h4>Sábado</h4>
+              <span class="status-badge fechado">● Fechado</span>
+            </div>
+            <p class="horario-texto">07:00 às 23:00 (Sem expediente)</p>
+          </div>
+
+          <div class="item-card">
+            <div class="horario-topo">
+              <h4>Domingo</h4>
+              <span class="status-badge fechado">● Fechado</span>
+            </div>
+            <p class="horario-texto">07:00 às 23:00 (Sem expediente)</p>
           </div>
         </div>
       </section>
 
+      <!-- ABA: PROFISSIONAIS (TURNO 1: 07:00 às 15:00 | TURNO 2: 15:00 às 23:00) -->
       <section id="profissionais" class="tab-content">
-        <h2>Profissionais</h2>
-        <div class="item-grid">
-          <div class="item-card">
-            <h4>Treinador de Salão</h4>
-            <p>CREF ativo</p>
+        <h2>Profissionais da Unidade</h2>
+        <p style="color: #64748b; margin-top: 4px; margin-bottom: 20px">
+          Equipe técnica de instrutores com status de presença em tempo real no
+          salão.
+        </p>
+
+        <div class="turnos-grid">
+          <!-- Coluna Turno 1 -->
+          <div class="turno-coluna">
+            <div class="turno-header">
+              <div>
+                <h3>Turno 1</h3>
+                <div class="turno-horario-sub">07:00 às 15:00</div>
+              </div>
+              <span id="badge-turno-1" class="status-badge aberto">
+                <span class="pulse-dot"></span> Em Atividade
+              </span>
+            </div>
+
+            <div class="professores-lista">
+              <!-- Professor 1 -->
+              <div class="item-card">
+                <div class="prof-card-topo">
+                  <h4>Professor 1</h4>
+                  <span class="status-badge status-prof-t1 aberto">
+                    <span class="pulse-dot"></span> Em atividade no salão
+                  </span>
+                </div>
+                <p>Treinador de Salão • Musculação e Postura</p>
+              </div>
+
+              <!-- Professor 2 -->
+              <div class="item-card">
+                <div class="prof-card-topo">
+                  <h4>Professor 2</h4>
+                  <span class="status-badge status-prof-t1 aberto">
+                    <span class="pulse-dot"></span> Em atividade no salão
+                  </span>
+                </div>
+                <p>Treinador de Salão • Musculação e Biomecânica</p>
+              </div>
+            </div>
+          </div>
+
+          <!-- Coluna Turno 2 -->
+          <div class="turno-coluna">
+            <div class="turno-header">
+              <div>
+                <h3>Turno 2</h3>
+                <div class="turno-horario-sub">15:00 às 23:00</div>
+              </div>
+              <span id="badge-turno-2" class="status-badge fechado">
+                ○ Fora de Turno
+              </span>
+            </div>
+
+            <div class="professores-lista">
+              <!-- Professor 3 -->
+              <div class="item-card">
+                <div class="prof-card-topo">
+                  <h4>Professor 3</h4>
+                  <span class="status-badge status-prof-t2 fechado">
+                    ○ Fora do horário
+                  </span>
+                </div>
+                <p>Treinador de Salão • Musculação e Força</p>
+              </div>
+
+              <!-- Professor 4 -->
+              <div class="item-card">
+                <div class="prof-card-topo">
+                  <h4>Professor 4</h4>
+                  <span class="status-badge status-prof-t2 fechado">
+                    ○ Fora do horário
+                  </span>
+                </div>
+                <p>Treinador de Salão • Musculação e Hipertrofia</p>
+              </div>
+            </div>
           </div>
         </div>
       </section>
@@ -469,6 +726,71 @@
         if (evento) evento.preventDefault()
         sessionStorage.removeItem('alunoLogadoId')
         window.location.href = '/login.html'
+      }
+
+      // Função que verifica em tempo real os horários dos turnos
+      function atualizarStatusProfessores() {
+        const agora = new Date()
+        const hora = agora.getHours()
+        const minutos = agora.getMinutes()
+        const horaDecimal = hora + minutos / 60
+
+        // Turno 1: 07:00 às 15:00 (das 7.00 até 14.99)
+        const t1Ativo = horaDecimal >= 7 && horaDecimal < 15
+        // Turno 2: 15:00 às 23:00 (das 15.00 até 22.99)
+        const t2Ativo = horaDecimal >= 15 && horaDecimal < 23
+
+        // Cabeçalhos dos Turnos
+        const badgeT1 = document.getElementById('badge-turno-1')
+        const badgeT2 = document.getElementById('badge-turno-2')
+
+        // Badges dos Professores
+        const profsT1 = document.querySelectorAll('.status-prof-t1')
+        const profsT2 = document.querySelectorAll('.status-prof-t2')
+
+        // Aplicação no Turno 1
+        if (badgeT1) {
+          if (t1Ativo) {
+            badgeT1.className = 'status-badge aberto'
+            badgeT1.innerHTML = '<span class="pulse-dot"></span> Em Atividade'
+          } else {
+            badgeT1.className = 'status-badge fechado'
+            badgeT1.textContent = '○ Fora de Turno'
+          }
+        }
+
+        profsT1.forEach(el => {
+          if (t1Ativo) {
+            el.className = 'status-badge status-prof-t1 aberto'
+            el.innerHTML =
+              '<span class="pulse-dot"></span> Em atividade no salão'
+          } else {
+            el.className = 'status-badge status-prof-t1 fechado'
+            el.textContent = '○ Fora do horário'
+          }
+        })
+
+        // Aplicação no Turno 2
+        if (badgeT2) {
+          if (t2Ativo) {
+            badgeT2.className = 'status-badge aberto'
+            badgeT2.innerHTML = '<span class="pulse-dot"></span> Em Atividade'
+          } else {
+            badgeT2.className = 'status-badge fechado'
+            badgeT2.textContent = '○ Fora de Turno'
+          }
+        }
+
+        profsT2.forEach(el => {
+          if (t2Ativo) {
+            el.className = 'status-badge status-prof-t2 aberto'
+            el.innerHTML =
+              '<span class="pulse-dot"></span> Em atividade no salão'
+          } else {
+            el.className = 'status-badge status-prof-t2 fechado'
+            el.textContent = '○ Fora do horário'
+          }
+        })
       }
 
       async function carregarDadosAluno() {
@@ -507,7 +829,7 @@
             dados.nome || (dados.email ? dados.email.split('@')[0] : 'Aluno')
           emailElem.textContent = dados.email || '-'
 
-          // Data com tratamento de fuso UTC
+          // Data com tratamento de fuso UTC para não voltar 1 dia
           if (dados.nascimento) {
             const dataNasc = new Date(dados.nascimento)
             const hoje = new Date()
@@ -577,7 +899,12 @@
         }
       }
 
-      window.addEventListener('DOMContentLoaded', carregarDadosAluno)
+      window.addEventListener('DOMContentLoaded', () => {
+        carregarDadosAluno()
+        atualizarStatusProfessores()
+        // Atualiza o status em tempo real a cada 60 segundos
+        setInterval(atualizarStatusProfessores, 60000)
+      })
     </script>
   </body>
 </html>
